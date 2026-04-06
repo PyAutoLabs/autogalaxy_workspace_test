@@ -1,0 +1,4 @@
+aggregator/galaxies.py
+aggregator/fit_imaging.py
+aggregator/fit_interferometer.py
+aggregator/ellipse.py

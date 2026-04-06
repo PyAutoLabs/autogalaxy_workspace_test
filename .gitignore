@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+output/
+*.sqlite
+*.log
+.pytest_cache/
+failed/
