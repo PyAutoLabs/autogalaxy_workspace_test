@@ -1,10 +1,14 @@
 """
-JAX Likelihood: Rectangular Adapt-Image Pixelization
-=====================================================
+JAX Likelihood: Rectangular Adapt-Image Pixelization + MGE Bulge
+=================================================================
 
-Verify that JAX can compute the log-likelihood of an ``Imaging`` fit for an
-autogalaxy model that uses an adapt-image rectangular pixelization
-(``RectangularAdaptImage`` + ``Adapt`` regularization).
+Two-galaxy autogalaxy model: a foreground galaxy with an MGE bulge and a
+second galaxy with an adapt-image rectangular pixelization
+(``RectangularAdaptImage`` + ``Constant`` regularization).
+
+This is the multi-pixelization regression case the path-tuple library fix
+was made for: prior to the fix the autolens fallback would silently return
+the wrong adapt image when more than one galaxy is present.
 
 Two paths are exercised:
 
@@ -12,7 +16,7 @@ Two paths are exercised:
 2. ``jax.jit(analysis.fit_from)`` scalar round-trip — relies on
    ``AnalysisImaging._register_fit_imaging_pytrees`` and on
    ``AdaptImages.image_for_galaxy`` resolving fresh-Galaxy lookups via the
-   path-tuple list across the JIT boundary.
+   path-tuple list.
 """
 
 import time
@@ -44,27 +48,39 @@ dataset = ag.Imaging.from_fits(
     pixel_scales=0.2,
 )
 
+mask_radius = 3.0
+
 mask = ag.Mask2D.circular(
     shape_native=dataset.shape_native,
     pixel_scales=dataset.pixel_scales,
-    radius=3.0,
+    radius=mask_radius,
 )
 
 dataset = dataset.apply_mask(mask=mask)
+
+over_sample_size = ag.util.over_sample.over_sample_size_via_radial_bins_from(
+    grid=dataset.grid,
+    sub_size_list=[4, 2, 1],
+    radial_list=[0.3, 0.6],
+    centre_list=[(0.0, 0.0)],
+)
+
 dataset = dataset.apply_over_sampling(
-    over_sample_size_lp=4,
+    over_sample_size_lp=over_sample_size,
     over_sample_size_pixelization=4,
 )
 
 """
 __Adapt Images__
 
-The galaxy is named ``galaxy`` in the model, so the path tuple is
-``('galaxies', 'galaxy')``. ``dataset.data`` is used as a stand-in for the
-"previous-fit" galaxy image — sufficient to exercise the adapt-image code paths.
+The model has two galaxies named ``galaxy_0`` (MGE bulge) and ``galaxy_1``
+(pixelization). ``galaxy_1`` is the only one that needs an adapt image, but
+``galaxy_0`` is included in the dict to keep the path list aligned with all
+galaxies in the analysis.
 """
 galaxy_name_image_dict = {
-    "('galaxies', 'galaxy')": dataset.data,
+    "('galaxies', 'galaxy_0')": dataset.data,
+    "('galaxies', 'galaxy_1')": dataset.data,
 }
 
 adapt_images = ag.AdaptImages(galaxy_name_image_dict=galaxy_name_image_dict)
@@ -72,27 +88,38 @@ adapt_images = ag.AdaptImages(galaxy_name_image_dict=galaxy_name_image_dict)
 """
 __Model__
 
-Single galaxy with an adapt-image rectangular pixelization. The mesh shape is
-fixed (28 x 28) per the JAX static-shape requirement.
+galaxy_0: MGE bulge — provides linear light profiles.
+galaxy_1: rectangular adapt-image pixelization — exercises the adapt-image
+inversion path that was previously broken across the JIT boundary.
 """
-mesh = ag.mesh.RectangularAdaptImage(shape=(28, 28), weight_power=1.0)
-regularization = ag.reg.Adapt()
+bulge = ag.model_util.mge_model_from(
+    mask_radius=mask_radius,
+    total_gaussians=20,
+    centre_prior_is_uniform=True,
+)
+
+galaxy_0 = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
+
+mesh = ag.mesh.RectangularAdaptImage(shape=(28, 28))
+regularization = ag.reg.Constant(coefficient=1.0)
 pixelization = ag.Pixelization(mesh=mesh, regularization=regularization)
 
-galaxy = af.Model(ag.Galaxy, redshift=0.5, pixelization=pixelization)
+galaxy_1 = af.Model(ag.Galaxy, redshift=0.5, pixelization=pixelization)
 
-model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
+model = af.Collection(
+    galaxies=af.Collection(galaxy_0=galaxy_0, galaxy_1=galaxy_1)
+)
 
 print(model.info)
 
+settings = ag.Settings(
+    use_border_relocator=True,
+    use_positive_only_solver=True,
+    use_mixed_precision=True,
+)
+
 analysis = ag.AnalysisImaging(
-    dataset=dataset,
-    adapt_images=adapt_images,
-    settings=ag.Settings(
-        use_border_relocator=True,
-        use_positive_only_solver=True,
-        use_mixed_precision=True,
-    ),
+    dataset=dataset, adapt_images=adapt_images, settings=settings
 )
 
 """
@@ -135,27 +162,13 @@ register_model(model)
 instance = model.instance_from_prior_medians()
 
 analysis_np = ag.AnalysisImaging(
-    dataset=dataset,
-    adapt_images=adapt_images,
-    settings=ag.Settings(
-        use_border_relocator=True,
-        use_positive_only_solver=True,
-        use_mixed_precision=True,
-    ),
-    use_jax=False,
+    dataset=dataset, adapt_images=adapt_images, settings=settings, use_jax=False
 )
 fit_np = analysis_np.fit_from(instance=instance)
 print("NumPy fit.log_likelihood:", float(fit_np.log_likelihood))
 
 analysis_jit = ag.AnalysisImaging(
-    dataset=dataset,
-    adapt_images=adapt_images,
-    settings=ag.Settings(
-        use_border_relocator=True,
-        use_positive_only_solver=True,
-        use_mixed_precision=True,
-    ),
-    use_jax=True,
+    dataset=dataset, adapt_images=adapt_images, settings=settings, use_jax=True
 )
 fit_jit_fn = jax.jit(analysis_jit.fit_from)
 fit = fit_jit_fn(instance)
