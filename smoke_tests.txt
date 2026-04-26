@@ -7,4 +7,4 @@ jax_likelihood_functions/imaging/mge.py
 jax_likelihood_functions/imaging/mge_group.py
 jax_likelihood_functions/imaging/rectangular.py
 imaging/model_fit.py
-imaging/visualization.py
+# imaging/visualization.py  # disabled: bypass mode mkdir race condition / fast-plots skips savefig (rhayes777/PyAutoFit#1179)
