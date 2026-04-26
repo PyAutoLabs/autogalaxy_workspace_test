@@ -32,18 +32,11 @@ Expected outputs are derived directly from the source code of:
   - autogalaxy/imaging/plot/fit_imaging_plots.py
 """
 
-import os
 import shutil
 import time
 from os import path
 from pathlib import Path
 from types import SimpleNamespace
-
-# This script asserts that subplot PNG / FITS files land on disk. The smoke
-# runner sets PYAUTO_FAST_PLOTS=1 to skip savefig for speed, which would cause
-# every assertion below to fail. Clear it before any plotting code is imported
-# so this script behaves the same under the smoke runner as a direct run.
-os.environ.pop("PYAUTO_FAST_PLOTS", None)
 
 from autoconf import conf
 

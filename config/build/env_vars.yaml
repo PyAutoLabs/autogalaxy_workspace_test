@@ -21,3 +21,7 @@ overrides:
   # JAX likelihood functions test JIT compilation — need JAX enabled and full-size datasets
   - pattern: "jax_likelihood_functions/"
     unset: [PYAUTO_WORKSPACE_SMALL_DATASETS, PYAUTO_DISABLE_JAX]
+  # imaging/visualization.py asserts subplot PNG / FITS files land on disk —
+  # PYAUTO_FAST_PLOTS skips savefig and would break those assertions.
+  - pattern: "imaging/visualization"
+    unset: [PYAUTO_FAST_PLOTS]
