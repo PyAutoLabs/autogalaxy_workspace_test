@@ -6,3 +6,5 @@ jax_likelihood_functions/imaging/lp.py
 jax_likelihood_functions/imaging/mge.py
 jax_likelihood_functions/imaging/mge_group.py
 jax_likelihood_functions/imaging/rectangular.py
+imaging/model_fit.py
+imaging/visualization.py
