@@ -7,3 +7,12 @@ output/
 .pytest_cache/
 failed/
 dataset/
+
+# Generated artifacts — never check in
+image.fits
+path/
+scripts/path/
+scripts/scripts/
+output_path/
+root.log
+.codex/
