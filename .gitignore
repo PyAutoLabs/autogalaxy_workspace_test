@@ -13,6 +13,7 @@ image.fits
 path/
 scripts/path/
 scripts/scripts/
+scripts/imaging/images/
 output_path/
 root.log
 .codex/
