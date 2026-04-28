@@ -16,5 +16,12 @@ jax_likelihood_functions/interferometer/rectangular.py
 jax_likelihood_functions/interferometer/rectangular_mge.py
 jax_likelihood_functions/interferometer/delaunay.py
 jax_likelihood_functions/interferometer/delaunay_mge.py
+jax_likelihood_functions/multi/lp.py
+jax_likelihood_functions/multi/mge.py
+jax_likelihood_functions/multi/mge_group.py
+jax_likelihood_functions/multi/rectangular.py
+jax_likelihood_functions/multi/rectangular_mge.py
+jax_likelihood_functions/multi/delaunay.py
+jax_likelihood_functions/multi/delaunay_mge.py
 imaging/model_fit.py
 imaging/visualization.py
