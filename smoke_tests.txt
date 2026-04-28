@@ -9,5 +9,12 @@ jax_likelihood_functions/imaging/rectangular.py
 jax_likelihood_functions/imaging/rectangular_mge.py
 jax_likelihood_functions/imaging/delaunay.py
 # jax_likelihood_functions/imaging/delaunay_mge.py  # disabled: jax 0.7 removed jax.interpreters.xla.pytype_aval_mappings — see PyAutoPrompt/autobuild/smoke_workspace_fixes.md
+jax_likelihood_functions/interferometer/lp.py
+jax_likelihood_functions/interferometer/mge.py
+jax_likelihood_functions/interferometer/mge_group.py
+jax_likelihood_functions/interferometer/rectangular.py
+jax_likelihood_functions/interferometer/rectangular_mge.py
+jax_likelihood_functions/interferometer/delaunay.py
+jax_likelihood_functions/interferometer/delaunay_mge.py
 imaging/model_fit.py
 imaging/visualization.py
