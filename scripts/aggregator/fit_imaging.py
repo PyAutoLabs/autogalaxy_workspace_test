@@ -5,6 +5,7 @@ Exercises FitImagingAgg max_log_likelihood_gen_from, randomly_drawn_via_pdf_gen_
 all_above_weight_gen_from, and adapt_images round-trip.
 Also exercises ImagingAgg dataset_gen_from.
 """
+
 import os
 import shutil
 from os import path
@@ -191,7 +192,9 @@ imaging = ag.Imaging(
     over_sample_size_pixelization=3,
 )
 masked_imaging_oversampled = imaging.apply_mask(mask=make_mask_2d_7x7())
-analysis_oversampled = ag.AnalysisImaging(dataset=masked_imaging_oversampled, use_jax=False)
+analysis_oversampled = ag.AnalysisImaging(
+    dataset=masked_imaging_oversampled, use_jax=False
+)
 
 # Use a different database_file for this test
 database_sqlite = path.join(conf.instance.output_path, f"{db_file_imaging}.sqlite")
@@ -200,6 +203,7 @@ if path.exists(database_sqlite):
 result_path = path.join(conf.instance.output_path, db_file_imaging)
 if path.exists(result_path):
     shutil.rmtree(result_path)
+
 
 @with_config("general", "output", "samples_to_csv", value=True)
 def _agg_imaging():
@@ -213,6 +217,7 @@ def _agg_imaging():
     agg = af.Aggregator.from_database(filename=db)
     agg.add_directory(directory=path.join(conf.instance.output_path, db_file_imaging))
     return agg
+
 
 agg = _agg_imaging()
 dataset_agg = ag.agg.ImagingAgg(aggregator=agg)

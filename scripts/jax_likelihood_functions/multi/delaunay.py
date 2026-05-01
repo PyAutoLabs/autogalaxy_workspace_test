@@ -69,9 +69,7 @@ dataset_list = [
     dataset.apply_mask(mask=mask) for dataset, mask in zip(dataset_list, mask_list)
 ]
 dataset_list = [
-    dataset.apply_over_sampling(
-        over_sample_size_lp=1, over_sample_size_pixelization=1
-    )
+    dataset.apply_over_sampling(over_sample_size_lp=1, over_sample_size_pixelization=1)
     for dataset in dataset_list
 ]
 
@@ -252,8 +250,6 @@ params_jit = jnp.array(
 log_l_jit = log_l_jit_fn(params_jit)
 
 print("JIT log_likelihood_function:", log_l_jit)
-assert isinstance(log_l_jit, jnp.ndarray), (
-    f"expected jax.Array, got {type(log_l_jit)}"
-)
+assert isinstance(log_l_jit, jnp.ndarray), f"expected jax.Array, got {type(log_l_jit)}"
 np.testing.assert_allclose(float(log_l_jit), log_l_np, rtol=1e-2)
 print("PASS: jit(log_likelihood_function) round-trip matches NumPy scalar.")

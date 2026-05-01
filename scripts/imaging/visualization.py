@@ -113,9 +113,7 @@ mesh_rect = ag.mesh.RectangularAdaptImage(shape=(22, 22))
 reg_rect = ag.reg.Constant(coefficient=1.0)
 pix_rect = ag.Pixelization(mesh=mesh_rect, regularization=reg_rect)
 galaxy_rectangular = af.Model(ag.Galaxy, redshift=0.5, pixelization=pix_rect)
-model_rectangular = af.Collection(
-    galaxies=af.Collection(galaxy=galaxy_rectangular)
-)
+model_rectangular = af.Collection(galaxies=af.Collection(galaxy=galaxy_rectangular))
 
 # --- Delaunay pixelization ---
 image_mesh = ag.image_mesh.Overlay(shape=(22, 22))

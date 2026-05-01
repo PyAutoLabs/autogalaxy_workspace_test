@@ -4,6 +4,7 @@ Integration test: aggregator Ellipse scrape.
 Exercises EllipsesAgg, FitEllipseAgg, and MultipolesAgg
 randomly_drawn_via_pdf_gen_from and all_above_weight_gen_from.
 """
+
 import os
 import shutil
 from os import path
@@ -89,7 +90,9 @@ print("Test 1: ellipses_randomly_drawn_via_pdf_gen_from ... ", end="")
 
 db_file = "db_ellipses"
 analysis = ag.AnalysisEllipse(dataset=masked_imaging, use_jax=False)
-agg = aggregator_from(database_file=db_file, analysis=analysis, model=model, samples=samples)
+agg = aggregator_from(
+    database_file=db_file, analysis=analysis, model=model, samples=samples
+)
 ellipses_agg = ag.agg.EllipsesAgg(aggregator=agg)
 ellipses_pdf_gen = ellipses_agg.randomly_drawn_via_pdf_gen_from(total_samples=2)
 
@@ -110,7 +113,9 @@ print("PASSED")
 
 print("Test 2: ellipses_all_above_weight_gen ... ", end="")
 
-agg = aggregator_from(database_file=db_file, analysis=analysis, model=model, samples=samples)
+agg = aggregator_from(
+    database_file=db_file, analysis=analysis, model=model, samples=samples
+)
 ellipses_agg = ag.agg.EllipsesAgg(aggregator=agg)
 ellipses_pdf_gen = ellipses_agg.all_above_weight_gen_from(minimum_weight=-1.0)
 weight_pdf_gen = ellipses_agg.weights_above_gen_from(minimum_weight=-1.0)
@@ -141,7 +146,9 @@ print("PASSED")
 print("Test 3: fit_ellipse_randomly_drawn_via_pdf_gen_from ... ", end="")
 
 db_file = "db_fit_ellipse"
-agg = aggregator_from(database_file=db_file, analysis=analysis_ellipse, model=model, samples=samples)
+agg = aggregator_from(
+    database_file=db_file, analysis=analysis_ellipse, model=model, samples=samples
+)
 fit_agg = ag.agg.FitEllipseAgg(aggregator=agg)
 fit_pdf_gen = fit_agg.randomly_drawn_via_pdf_gen_from(total_samples=2)
 
@@ -165,7 +172,9 @@ print("PASSED")
 
 print("Test 4: fit_ellipse_all_above_weight_gen ... ", end="")
 
-agg = aggregator_from(database_file=db_file, analysis=analysis_ellipse, model=model, samples=samples)
+agg = aggregator_from(
+    database_file=db_file, analysis=analysis_ellipse, model=model, samples=samples
+)
 fit_agg = ag.agg.FitEllipseAgg(aggregator=agg)
 fit_pdf_gen = fit_agg.all_above_weight_gen_from(minimum_weight=-1.0)
 
@@ -188,7 +197,9 @@ print("PASSED")
 print("Test 5: multipoles_randomly_drawn_via_pdf_gen_from ... ", end="")
 
 db_file = "db_multipoles"
-agg = aggregator_from(database_file=db_file, analysis=analysis, model=model, samples=samples)
+agg = aggregator_from(
+    database_file=db_file, analysis=analysis, model=model, samples=samples
+)
 multipoles_agg = ag.agg.MultipolesAgg(aggregator=agg)
 multipoles_pdf_gen = multipoles_agg.randomly_drawn_via_pdf_gen_from(total_samples=2)
 
@@ -210,7 +221,9 @@ print("PASSED")
 
 print("Test 6: multipoles_all_above_weight_gen ... ", end="")
 
-agg = aggregator_from(database_file=db_file, analysis=analysis, model=model, samples=samples)
+agg = aggregator_from(
+    database_file=db_file, analysis=analysis, model=model, samples=samples
+)
 multipoles_agg = ag.agg.MultipolesAgg(aggregator=agg)
 multipoles_pdf_gen = multipoles_agg.all_above_weight_gen_from(minimum_weight=-1.0)
 weight_pdf_gen = multipoles_agg.weights_above_gen_from(minimum_weight=-1.0)

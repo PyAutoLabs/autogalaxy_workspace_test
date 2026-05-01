@@ -106,9 +106,7 @@ pixelization = ag.Pixelization(mesh=mesh, regularization=regularization)
 
 galaxy_1 = af.Model(ag.Galaxy, redshift=0.5, pixelization=pixelization)
 
-model = af.Collection(
-    galaxies=af.Collection(galaxy_0=galaxy_0, galaxy_1=galaxy_1)
-)
+model = af.Collection(galaxies=af.Collection(galaxy_0=galaxy_0, galaxy_1=galaxy_1))
 
 print(model.info)
 
@@ -174,9 +172,9 @@ fit_jit_fn = jax.jit(analysis_jit.fit_from)
 fit = fit_jit_fn(instance)
 
 print("JIT fit.log_likelihood:", fit.log_likelihood)
-assert isinstance(fit.log_likelihood, jnp.ndarray), (
-    f"expected jax.Array, got {type(fit.log_likelihood)}"
-)
+assert isinstance(
+    fit.log_likelihood, jnp.ndarray
+), f"expected jax.Array, got {type(fit.log_likelihood)}"
 np.testing.assert_allclose(
     float(fit.log_likelihood), float(fit_np.log_likelihood), rtol=1e-2
 )

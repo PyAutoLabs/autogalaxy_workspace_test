@@ -250,8 +250,6 @@ params_jit = jnp.array(
 log_l_jit = log_l_jit_fn(params_jit)
 
 print("JIT log_likelihood_function:", log_l_jit)
-assert isinstance(log_l_jit, jnp.ndarray), (
-    f"expected jax.Array, got {type(log_l_jit)}"
-)
+assert isinstance(log_l_jit, jnp.ndarray), f"expected jax.Array, got {type(log_l_jit)}"
 np.testing.assert_allclose(float(log_l_jit), log_l_np, rtol=1e-4)
 print("PASS: jit(log_likelihood_function) round-trip matches NumPy scalar.")

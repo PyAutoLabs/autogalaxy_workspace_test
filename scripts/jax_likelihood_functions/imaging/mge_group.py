@@ -127,9 +127,7 @@ for extra_galaxy_centre in centre_list:
         ag.lp_basis.Basis, profile_list=extra_galaxy_gaussian_list
     )
 
-    extra_galaxy = af.Model(
-        ag.Galaxy, redshift=0.5, bulge=extra_galaxy_bulge
-    )
+    extra_galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=extra_galaxy_bulge)
 
     extra_galaxies_list.append(extra_galaxy)
 
@@ -197,9 +195,9 @@ fit_jit_fn = jax.jit(analysis_jit.fit_from)
 fit = fit_jit_fn(instance)
 
 print("JIT fit.log_likelihood:", fit.log_likelihood)
-assert isinstance(fit.log_likelihood, jnp.ndarray), (
-    f"expected jax.Array, got {type(fit.log_likelihood)}"
-)
+assert isinstance(
+    fit.log_likelihood, jnp.ndarray
+), f"expected jax.Array, got {type(fit.log_likelihood)}"
 np.testing.assert_allclose(
     float(fit.log_likelihood), float(fit_np.log_likelihood), rtol=1e-4
 )

@@ -101,9 +101,7 @@ __Result__
 """
 print(result.max_log_likelihood_instance)
 
-aplt.subplot_galaxies(
-    galaxies=result.max_log_likelihood_galaxies, grid=result.grids.lp
-)
+aplt.subplot_galaxies(galaxies=result.max_log_likelihood_galaxies, grid=result.grids.lp)
 
 aplt.subplot_fit_imaging(fit=result.max_log_likelihood_fit)
 

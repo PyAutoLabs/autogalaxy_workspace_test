@@ -5,6 +5,7 @@ Exercises FitInterferometerAgg randomly_drawn_via_pdf_gen_from,
 all_above_weight_gen_from, and adapt_images round-trip.
 Also exercises InterferometerAgg dataset_gen_from.
 """
+
 import os
 import shutil
 from os import path
@@ -185,7 +186,9 @@ interferometer_custom = ag.Interferometer(
     real_space_mask=mask_2d_7x7,
     transformer_class=ag.TransformerDFT,
 )
-analysis_custom = ag.AnalysisInterferometer(dataset=interferometer_custom, use_jax=False)
+analysis_custom = ag.AnalysisInterferometer(
+    dataset=interferometer_custom, use_jax=False
+)
 
 database_sqlite = path.join(conf.instance.output_path, f"{db_file_inter}.sqlite")
 if path.exists(database_sqlite):
@@ -193,6 +196,7 @@ if path.exists(database_sqlite):
 result_path = path.join(conf.instance.output_path, db_file_inter)
 if path.exists(result_path):
     shutil.rmtree(result_path)
+
 
 @with_config("general", "output", "samples_to_csv", value=True)
 def _agg_inter():
@@ -206,6 +210,7 @@ def _agg_inter():
     agg = af.Aggregator.from_database(filename=db)
     agg.add_directory(directory=path.join(conf.instance.output_path, db_file_inter))
     return agg
+
 
 agg = _agg_inter()
 dataset_agg = ag.agg.InterferometerAgg(aggregator=agg)
