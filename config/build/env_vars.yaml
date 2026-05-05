@@ -21,6 +21,10 @@ overrides:
   # JAX likelihood functions test JIT compilation — need JAX enabled and full-size datasets
   - pattern: "jax_likelihood_functions/"
     unset: [PYAUTO_SMALL_DATASETS, PYAUTO_DISABLE_JAX]
+  # Model composition scripts assert exact prior_count for configured gaussian_per_basis.
+  # PYAUTO_SMALL_DATASETS=1 reduces total_gaussians and changes prior_count.
+  - pattern: "model_composition/"
+    unset: [PYAUTO_SMALL_DATASETS]
   # Aggregator scripts assert grid metadata (e.g. over_sample_size_lp == 5)
   # that depends on full-size datasets. PYAUTO_SMALL_DATASETS=1 reduces these.
   - pattern: "aggregator/"
