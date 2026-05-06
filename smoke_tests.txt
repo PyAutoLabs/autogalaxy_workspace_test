@@ -14,6 +14,8 @@ jax_grad/imaging/lp.py
 jax_grad/imaging/mge.py
 jax_grad/interferometer/lp.py
 jax_grad/interferometer/mge.py
+jax_grad/multi/lp.py
+jax_grad/multi/mge.py
 jax_likelihood_functions/interferometer/lp.py
 jax_likelihood_functions/interferometer/mge.py
 jax_likelihood_functions/interferometer/mge_group.py
