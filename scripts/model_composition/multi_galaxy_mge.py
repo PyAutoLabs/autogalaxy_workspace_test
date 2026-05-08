@@ -114,12 +114,8 @@ for path in paths:
 
 galaxy_0_paths = [p for p in paths if p[1] == "galaxy_0"]
 galaxy_1_paths = [p for p in paths if p[1] == "galaxy_1"]
-assert (
-    len(galaxy_0_paths) == 6
-), f"Expected 6 galaxy_0 paths, got {len(galaxy_0_paths)}"
-assert (
-    len(galaxy_1_paths) == 4
-), f"Expected 4 galaxy_1 paths, got {len(galaxy_1_paths)}"
+assert len(galaxy_0_paths) == 6, f"Expected 6 galaxy_0 paths, got {len(galaxy_0_paths)}"
+assert len(galaxy_1_paths) == 4, f"Expected 4 galaxy_1 paths, got {len(galaxy_1_paths)}"
 
 print("Full model composition: PASSED")
 
