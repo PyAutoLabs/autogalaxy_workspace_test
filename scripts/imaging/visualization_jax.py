@@ -8,14 +8,13 @@ Single-galaxy autogalaxy port of the autolens ``visualization_jax.py`` pilot
 Goal
 ----
 Run ``VisualizerImaging.visualize`` with JAX enabled end-to-end, gated behind
-``use_jax_for_visualization`` on ``Analysis``. A parametric MGE galaxy is used
-deliberately (simplest case — no pixelization, no inversion).
-
-This is **Path C**: ``fit_from`` runs on the eager JAX path
-(``use_jax=True`` makes ``_xp`` be ``jnp``) and returns a ``FitImaging`` backed
-by ``jax.Array`` objects. Matplotlib-bound plotters materialise arrays to NumPy
-at the boundary. No ``jax.jit`` is applied to ``fit_from`` — the full-JIT path
-(Path A) is exercised by ``modeling_visualization_jit.py``.
+``use_jax_for_visualization=True`` on ``Analysis``. After PyAutoGalaxy #390
+(2026-05-08) the imaging visualizer dispatches through
+``analysis.fit_for_visualization``, which lazily wraps ``fit_from`` in
+``jax.jit``. To trace across that boundary the model and fit return type
+must be JAX pytrees, so this script enables pytree registration before
+constructing the model. Parametric MGE galaxy — simplest case (no
+pixelization, no inversion).
 
 Scope
 -----
@@ -27,7 +26,6 @@ Scope
 """
 
 import shutil
-import traceback
 from os import path
 from pathlib import Path
 from types import SimpleNamespace
@@ -41,7 +39,10 @@ conf.instance.push(
 
 import autofit as af
 import autogalaxy as ag
+from autofit.jax.pytrees import enable_pytrees, register_model
 from autogalaxy.imaging.model.visualizer import VisualizerImaging
+
+enable_pytrees()
 
 
 """
@@ -86,6 +87,8 @@ galaxy_bulge = ag.model_util.mge_model_from(
 galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=galaxy_bulge)
 model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
 
+register_model(model)
+
 
 """
 __Analysis__
@@ -120,17 +123,11 @@ __Run visualize on the eager-JAX fit__
 instance = model.instance_from_prior_medians()
 
 print("Running VisualizerImaging.visualize with use_jax_for_visualization=True ...")
-try:
-    VisualizerImaging.visualize(
-        analysis=analysis,
-        paths=paths,
-        instance=instance,
-        during_analysis=False,
-    )
-    assert (image_path / "fit.png").exists(), "fit.png was not produced"
-    print("PILOT SUCCEEDED — JAX-backed visualization produced fit.png/galaxies.png.")
-except Exception:
-    print("PILOT FAILED — traceback below:")
-    print("=" * 72)
-    traceback.print_exc()
-    print("=" * 72)
+VisualizerImaging.visualize(
+    analysis=analysis,
+    paths=paths,
+    instance=instance,
+    during_analysis=False,
+)
+assert (image_path / "fit.png").exists(), "fit.png was not produced"
+print("PILOT SUCCEEDED — JAX-backed visualization produced fit.png/galaxies.png.")
