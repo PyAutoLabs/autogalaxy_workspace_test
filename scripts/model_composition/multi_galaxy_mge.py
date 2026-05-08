@@ -21,13 +21,13 @@ compatibility.
 
 __Contents__
 
-**Galaxy 0 Composition:** MGE bulge with gaussian_per_basis=2.
-**Galaxy 1 Composition:** MGE bulge with gaussian_per_basis=1.
-**Full Model:** af.Collection wrapping galaxy_0 + galaxy_1 (both at the same redshift).
-**MGE Prior Identity:** Within-basis sharing and cross-basis independence of priors.
-**Identifier Stability:** Hardcoded regression anchor for the full model.
-**Serialization Round-Trip:** dict/from_dict preserves prior count and path structure.
-**Model Info:** Human-readable info string contains expected component names.
+- **Galaxy 0 Composition:** MGE bulge with gaussian_per_basis=2.
+- **Galaxy 1 Composition:** MGE bulge with gaussian_per_basis=1.
+- **Full Model:** af.Collection wrapping galaxy_0 + galaxy_1 (both at the same redshift).
+- **MGE Prior Identity:** Within-basis sharing and cross-basis independence of priors.
+- **Identifier Stability:** Hardcoded regression anchor for the full model.
+- **Serialization Round-Trip:** dict/from_dict preserves prior count and path structure.
+- **Model Info:** Human-readable info string contains expected component names.
 """
 
 import autofit as af
