@@ -1,0 +1,41 @@
+subplot_format: [png]
+fits_are_zoomed: false
+
+dataset:
+  subplot_dataset: true
+  fits_dataset: false
+
+fit:
+  subplot_fit: false
+  subplot_fit_log10: false
+  subplot_of_galaxies: false
+  subplot_galaxy_images: false
+  fits_fit: false
+  fits_galaxy_images: false
+  fits_model_galaxy_images: false
+
+fit_imaging: {}
+
+galaxies:
+  subplot_galaxies: false
+  subplot_galaxy_images: false
+  fits_galaxy_images: false
+
+inversion:
+  subplot_inversion: false
+  subplot_mappings: false
+  csv_reconstruction: false
+
+adapt:
+  subplot_adapt_images: false
+  fits_adapt_images: false
+
+fit_interferometer: {}
+
+fit_ellipse:
+  subplot_fit_ellipse: true
+  data: true
+  data_no_ellipse: true
+  ellipse_residuals: true
+
+fit_quantity: {}
