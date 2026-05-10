@@ -14,6 +14,7 @@ path/
 scripts/path/
 scripts/scripts/
 scripts/imaging/images/
+scripts/ellipse/images/
 output_path/
 root.log
 .codex/
