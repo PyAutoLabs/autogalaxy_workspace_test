@@ -13,8 +13,10 @@ image.fits
 path/
 scripts/path/
 scripts/scripts/
-scripts/imaging/images/
-scripts/ellipse/images/
+# `**/images/` covers all dataset types (imaging/, ellipse/, interferometer/,
+# quantity/, point_source/, ...) — replaces the per-type entries that used to
+# live here. Mirrors the autolens_workspace_test pattern.
+**/images/
 output_path/
 root.log
 .codex/
