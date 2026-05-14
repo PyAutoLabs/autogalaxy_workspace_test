@@ -120,7 +120,9 @@ __Run visualize on the eager-JAX fit__
 """
 instance = model.instance_from_prior_medians()
 
-print("Running VisualizerInterferometer.visualize with use_jax_for_visualization=True ...")
+print(
+    "Running VisualizerInterferometer.visualize with use_jax_for_visualization=True ..."
+)
 VisualizerInterferometer.visualize(
     analysis=analysis,
     paths=paths,
