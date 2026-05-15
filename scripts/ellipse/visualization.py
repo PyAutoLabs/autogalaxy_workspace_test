@@ -230,7 +230,9 @@ for scenario_name, dataset, model in scenarios:
     sub_output.mkdir(parents=True)
     sub_paths = SimpleNamespace(image_path=sub_path, output_path=sub_output)
 
-    analysis = ag.AnalysisEllipse(dataset=dataset, title_prefix=scenario_name.upper())
+    analysis = ag.AnalysisEllipse(
+        dataset=dataset, title_prefix=scenario_name.upper(), use_jax=False
+    )
     instance = model.instance_from_prior_medians()
 
     _t0 = time.perf_counter()
