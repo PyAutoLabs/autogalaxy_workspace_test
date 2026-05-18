@@ -261,6 +261,52 @@ Calls (governed by config_source/visualize/plots.yaml):
   inversion.subplot_inversion -> inversion_0_0.png  (pixelized galaxies only)
 """
 
+"""
+__Likelihood Sanity Helper__
+
+Guards against regressions like PyAutoLens PR #504, where the CPU branch of
+``AnalysisImaging.log_likelihood_function`` silently returned ``fit.log_likelihood``
+instead of ``fit.figure_of_merit``. For a pixelization source these differ by
+the regularization log-det terms of the Bayesian log evidence. The autogalaxy
+``AnalysisImaging`` returns ``figure_of_merit`` correctly today; this guard
+catches the same asymmetry from being introduced here in future.
+
+Only fires on the pixelization runs (rectangular, delaunay) — for the parametric
+``Sersic`` galaxy ``figure_of_merit == log_likelihood`` by construction.
+"""
+import pytest
+from autofit.non_linear.fitness import Fitness
+
+
+def _assert_likelihood_sanity(label, analysis, model):
+    instance = model.instance_from_prior_medians()
+    analysis_value = analysis.log_likelihood_function(instance=instance)
+    fit = analysis.fit_from(instance=instance)
+    assert float(analysis_value) == pytest.approx(float(fit.figure_of_merit)), (
+        f"{label}: log_likelihood_function ({analysis_value}) does not match "
+        f"fit.figure_of_merit ({fit.figure_of_merit}) — regression of PR #504"
+    )
+    assert float(fit.figure_of_merit) != pytest.approx(
+        float(fit.log_likelihood), rel=1e-6
+    ), (
+        f"{label}: figure_of_merit == log_likelihood — pixelization regularization "
+        f"log-det terms are zero, this script no longer exercises the bug PR #504 fixed"
+    )
+    fitness = Fitness(
+        model=model,
+        analysis=analysis,
+        paths=None,
+        fom_is_log_likelihood=True,
+        resample_figure_of_merit=-1.0e99,
+    )
+    call_wrap_value = fitness.call_wrap(model.physical_values_from_prior_medians)
+    assert float(call_wrap_value) == pytest.approx(float(fit.figure_of_merit)), (
+        f"{label}: Fitness.call_wrap ({call_wrap_value}) does not match "
+        f"fit.figure_of_merit ({fit.figure_of_merit})"
+    )
+    print(f"  PASS {label}: LLF == figure_of_merit != log_likelihood == call_wrap")
+
+
 source_runs = [
     ("parametric", model_parametric, False),
     ("rectangular", model_rectangular, True),
@@ -296,6 +342,9 @@ for source_name, model, has_inversion in source_runs:
             sub_path / "inversion_0_0.png"
         ).exists(), f"{source_name}/inversion_0_0.png missing"
         print(f"  {source_name}/inversion_0_0.png OK")
+
+        # __Likelihood Sanity__ — only fires on the pixelization runs.
+        _assert_likelihood_sanity(f"JAX/{source_name}", analysis, model)
 
 
 """
