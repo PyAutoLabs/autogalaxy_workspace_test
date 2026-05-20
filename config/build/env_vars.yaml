@@ -6,7 +6,10 @@
 #
 # Pattern convention (same as no_run.yaml):
 #   - Patterns containing '/' do a substring match against the file path
-#   - Patterns without '/' match the file stem exactly
+#     including extension (so patterns may end in `.py` to anchor against
+#     the script form, e.g. `imaging/visualization.py` matches only the
+#     `.py` script, not `imaging/visualization_jax.py`).
+#   - Patterns without '/' match the file stem exactly.
 
 defaults:
   PYAUTO_TEST_MODE: "2"              # 0=normal, 1=reduced iterations, 2=skip sampler (fastest)
@@ -50,12 +53,25 @@ overrides:
   # would no-op via the NumPy fallback.
   - pattern: "imaging/visualization_jax"
     unset: [PYAUTO_DISABLE_JAX, PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
+  # ellipse/visualization.py asserts subplot PNG / FITS files land on disk
+  # (same intent as imaging/visualization.py). Loads pre-committed FITS at
+  # full resolution and builds the mask from dataset.shape_native, so both
+  # PYAUTO_FAST_PLOTS and PYAUTO_SMALL_DATASETS must be unset.
+  - pattern: "ellipse/visualization.py"
+    unset: [PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
   # modeling_visualization_jit tests the JIT-cached visualization path:
   # needs JAX enabled (Part 1 asserts log_likelihood is a jax.Array), the
   # full-resolution mask, a real Nautilus run for Part 2, and savefig active
   # (Part 2 asserts fit.png lands on disk).
   - pattern: "imaging/modeling_visualization_jit"
     unset: [PYAUTO_DISABLE_JAX, PYAUTO_SMALL_DATASETS, PYAUTO_TEST_MODE, PYAUTO_FAST_PLOTS]
+  # interferometer/visualization.py asserts subplot PNG / FITS files land on
+  # disk. Loads pre-committed FITS at full resolution and uses an explicit
+  # (256, 256) shape_native mask — both PYAUTO_FAST_PLOTS and
+  # PYAUTO_SMALL_DATASETS must be unset (the 15x15 cap caps even when
+  # shape_native is explicit).
+  - pattern: "interferometer/visualization.py"
+    unset: [PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
   # interferometer/visualization_jax exercises the jit-cached
   # fit_for_visualization path on the interferometer side.
   - pattern: "interferometer/visualization_jax"
@@ -63,6 +79,11 @@ overrides:
   # interferometer/modeling_visualization_jit — live Nautilus + JIT path.
   - pattern: "interferometer/modeling_visualization_jit"
     unset: [PYAUTO_DISABLE_JAX, PYAUTO_SMALL_DATASETS, PYAUTO_TEST_MODE, PYAUTO_FAST_PLOTS]
+  # quantity/visualization.py asserts subplot PNG files land on disk and
+  # builds an explicit (30, 30) shape_native mask which would mismatch the
+  # 15x15 cap from PYAUTO_SMALL_DATASETS=1.
+  - pattern: "quantity/visualization.py"
+    unset: [PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
   # quantity/visualization_jax exercises the jit-cached
   # fit_for_visualization path on the quantity side (wired in
   # PyAutoGalaxy #404).
