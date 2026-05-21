@@ -148,6 +148,37 @@ print("PASS: MGE jit-cached fit_for_visualization works and is reused.")
 
 
 """
+__Visualization Sanity__
+
+Phase D.1 rollout — autogalaxy variant (no Tracer / no lensing latents,
+so the imaging template's Einstein-radius assertions don't transfer).
+
+Catches the analogous failure mode for autogalaxy: a JAX-trace mismatch
+or pytree-cascade bug that leaves `subplot_fit.png` cosmetically OK but
+the underlying `model_data` array all-zero / NaN. The asserts run on the
+script's cached `fit_2` from Part 1 so the warm JIT path is exercised
+(the first-call compile is already paid by the Part 1 caching probe).
+"""
+
+_model_image = np.asarray(fit_2.model_data)
+assert np.isfinite(_model_image).all(), (
+    "fit.model_data has nan/inf — JAX-trace mismatch or inversion collapse"
+)
+assert float(np.abs(_model_image).sum()) > 0.0, (
+    "fit.model_data all-zero — light profile evaluation collapsed"
+)
+_fom = float(fit_2.figure_of_merit)
+assert np.isfinite(_fom), (
+    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
+)
+print(
+    f"  PASS Visualization Sanity (autogalaxy imaging): "
+    f"|model_data|.sum() = {float(np.abs(_model_image).sum()):.4f}, "
+    f"figure_of_merit = {_fom:.4f}"
+)
+
+
+"""
 ============================================================================
 Part 2 — Live Nautilus quick-update with linear light profiles
 ============================================================================
