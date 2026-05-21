@@ -28,6 +28,12 @@ overrides:
   # need JAX enabled and full-size datasets, same as jax_likelihood_functions/.
   - pattern: "jax_grad/"
     unset: [PYAUTO_SMALL_DATASETS, PYAUTO_DISABLE_JAX]
+  # convolver_mixed_precision asserts the convolver dispatches mixed-precision
+  # arrays cleanly. It loads a pre-committed 80x80 array; PYAUTO_SMALL_DATASETS=1
+  # would cap the mask to 15x15 and the assertion would fail with a shape mismatch
+  # before the precision check even ran.
+  - pattern: "jax_assertions/convolver_mixed_precision"
+    unset: [PYAUTO_SMALL_DATASETS]
   # Model composition scripts assert exact prior_count for configured gaussian_per_basis.
   # PYAUTO_SMALL_DATASETS=1 reduces total_gaussians and changes prior_count.
   - pattern: "model_composition/"
