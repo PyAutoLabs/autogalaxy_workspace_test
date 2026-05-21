@@ -153,9 +153,8 @@ fit_jit_fn = jax.jit(analysis_jit.fit_from)
 fit = fit_jit_fn(instance)
 
 print("JIT fit.log_likelihood:", fit.log_likelihood)
-assert isinstance(fit.log_likelihood, jnp.ndarray), \
-    f"expected jax.Array, got {type(fit.log_likelihood)}"
-np.testing.assert_allclose(
-    float(fit.log_likelihood), total_log_likelihood, rtol=1e-4
-)
+assert isinstance(
+    fit.log_likelihood, jnp.ndarray
+), f"expected jax.Array, got {type(fit.log_likelihood)}"
+np.testing.assert_allclose(float(fit.log_likelihood), total_log_likelihood, rtol=1e-4)
 print("PASS: jit(fit_from) round-trip matches NumPy scalar.")
