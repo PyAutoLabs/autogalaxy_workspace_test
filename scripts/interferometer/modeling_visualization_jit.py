@@ -154,6 +154,41 @@ print("PASS: MGE jit-cached fit_for_visualization works and is reused.")
 
 
 """
+__Visualization Sanity__
+
+Phase D.1 rollout — autogalaxy interferometer variant (no Tracer / no
+lensing latents). Combines:
+
+* **Non-lensing template:** `fit.figure_of_merit` finite — catches the
+  JAX-trace mismatch or inversion collapse that would leave the model
+  cosmetically OK but the chi² nan/inf.
+* **Interferometer-specific:** `fit.model_visibilities` finite +
+  non-zero. Catches the NUFFT / linear-inversion collapse where the
+  visibilities silently become all-zero or NaN.
+
+Asserts run on the script's cached `fit_2` from Part 1 so the warm JIT
+path is exercised (first-call compile already paid by the caching probe).
+"""
+
+_mv = np.asarray(fit_2.model_data)
+assert np.isfinite(_mv).all(), (
+    "fit.model_data (visibilities) have nan/inf — NUFFT / inversion collapse"
+)
+assert float(np.abs(_mv).sum()) > 0.0, (
+    "fit.model_data (visibilities) all-zero — NUFFT / inversion collapse"
+)
+_fom = float(fit_2.figure_of_merit)
+assert np.isfinite(_fom), (
+    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
+)
+print(
+    f"  PASS Visualization Sanity (autogalaxy interferometer): "
+    f"|model_data|.sum() = {float(np.abs(_mv).sum()):.4f}, "
+    f"figure_of_merit = {_fom:.4f}"
+)
+
+
+"""
 ============================================================================
 Part 2 — Live Nautilus quick-update with linear light profiles
 ============================================================================
