@@ -39,14 +39,14 @@ def clean():
     database_sqlite = path.join(conf.instance.output_path, f"{database_file}.sqlite")
     if path.exists(database_sqlite):
         os.remove(database_sqlite)
-    result_path = path.join(conf.instance.output_path, database_file)
+    result_path = path.join(conf.instance.output_path, "test_mode", database_file)
     if path.exists(result_path):
         shutil.rmtree(result_path)
 
 
 @with_config("general", "output", "samples_to_csv", value=True)
 def aggregator_from(analysis, model, samples):
-    result_path = path.join(conf.instance.output_path, database_file)
+    result_path = path.join(conf.instance.output_path, "test_mode", database_file)
     clean()
     search = ag.m.MockSearch(
         samples=samples, result=ag.m.MockResult(model=model, samples=samples)
@@ -193,7 +193,7 @@ analysis_custom = ag.AnalysisInterferometer(
 database_sqlite = path.join(conf.instance.output_path, f"{db_file_inter}.sqlite")
 if path.exists(database_sqlite):
     os.remove(database_sqlite)
-result_path = path.join(conf.instance.output_path, db_file_inter)
+result_path = path.join(conf.instance.output_path, "test_mode", db_file_inter)
 if path.exists(result_path):
     shutil.rmtree(result_path)
 
@@ -208,7 +208,7 @@ def _agg_inter():
     analysis_custom.visualize_before_fit(paths=search.paths, model=model)
     db = path.join(conf.instance.output_path, f"{db_file_inter}.sqlite")
     agg = af.Aggregator.from_database(filename=db)
-    agg.add_directory(directory=path.join(conf.instance.output_path, db_file_inter))
+    agg.add_directory(directory=path.join(conf.instance.output_path, "test_mode", db_file_inter))
     return agg
 
 
@@ -224,7 +224,7 @@ for dataset_list in dataset_gen:
 database_sqlite = path.join(conf.instance.output_path, f"{db_file_inter}.sqlite")
 if path.exists(database_sqlite):
     os.remove(database_sqlite)
-result_path = path.join(conf.instance.output_path, db_file_inter)
+result_path = path.join(conf.instance.output_path, "test_mode", db_file_inter)
 if path.exists(result_path):
     shutil.rmtree(result_path)
 
