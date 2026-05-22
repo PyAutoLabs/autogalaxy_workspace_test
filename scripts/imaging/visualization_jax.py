@@ -131,3 +131,33 @@ VisualizerImaging.visualize(
 )
 assert (image_path / "fit.png").exists(), "fit.png was not produced"
 print("PILOT SUCCEEDED — JAX-backed visualization produced fit.png/galaxies.png.")
+
+
+"""
+__Visualization Sanity__
+
+Phase D.2.a rollout — autogalaxy variant (no Tracer / no lensing
+latents). Asserts `fit.model_data` finite + non-zero and
+`fit.figure_of_merit` finite on the script's prior-median fit, catching
+the analogous failure mode where the JAX path silently produces all-zero
+or NaN model output despite the cosmetic plot looking fine.
+"""
+import numpy as _sanity_np
+
+_fit_for_vis = analysis.fit_from(instance=instance)
+_model_image = _sanity_np.asarray(_fit_for_vis.model_data)
+assert _sanity_np.isfinite(_model_image).all(), (
+    "fit.model_data has nan/inf — JAX-trace mismatch or inversion collapse"
+)
+assert float(_sanity_np.abs(_model_image).sum()) > 0.0, (
+    "fit.model_data all-zero — light profile evaluation collapsed"
+)
+_fom = float(_fit_for_vis.figure_of_merit)
+assert _sanity_np.isfinite(_fom), (
+    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
+)
+print(
+    f"  PASS Visualization Sanity (autogalaxy imaging): "
+    f"|model_data|.sum() = {float(_sanity_np.abs(_model_image).sum()):.4f}, "
+    f"figure_of_merit = {_fom:.4f}"
+)

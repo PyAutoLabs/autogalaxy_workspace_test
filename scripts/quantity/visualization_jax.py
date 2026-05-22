@@ -122,3 +122,32 @@ VisualizerQuantity.visualize(
 
 assert (image_path / "fit.png").exists(), "fit.png was not produced"
 print("PILOT SUCCEEDED — JAX-backed quantity visualization produced fit.png.")
+
+
+"""
+__Visualization Sanity__
+
+Phase D.2.a rollout — autogalaxy quantity variant (no Tracer, no
+lensing). `FitQuantity.model_data` is the model field on the dataset
+grid; the analogous failure mode is "JAX trace through the quantity
+helpers loses tracer values → model field collapses to zero/NaN".
+"""
+import numpy as _sanity_np
+
+_fit_for_vis = analysis.fit_from(instance=instance)
+_model_field = _sanity_np.asarray(_fit_for_vis.model_data)
+assert _sanity_np.isfinite(_model_field).all(), (
+    "fit.model_data has nan/inf — JAX-trace mismatch on quantity helpers"
+)
+assert float(_sanity_np.abs(_model_field).sum()) > 0.0, (
+    "fit.model_data all-zero — quantity model field collapsed"
+)
+_fom = float(_fit_for_vis.figure_of_merit)
+assert _sanity_np.isfinite(_fom), (
+    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
+)
+print(
+    f"  PASS Visualization Sanity (autogalaxy quantity): "
+    f"|model_data|.sum() = {float(_sanity_np.abs(_model_field).sum()):.4f}, "
+    f"figure_of_merit = {_fom:.4f}"
+)
