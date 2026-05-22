@@ -37,5 +37,3 @@ fit_ellipse:
   data: true
   data_no_ellipse: true
   ellipse_residuals: true
-
-fit_quantity: {}
