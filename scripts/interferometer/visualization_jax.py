@@ -131,3 +131,33 @@ VisualizerInterferometer.visualize(
 )
 assert (image_path / "fit.png").exists(), "fit.png was not produced"
 print("PILOT SUCCEEDED — JAX-backed interferometer visualization produced fit.png.")
+
+
+"""
+__Visualization Sanity__
+
+Phase D.2.a rollout — autogalaxy interferometer variant (no Tracer).
+Asserts `fit.model_data` (complex Visibilities) finite + non-zero and
+`fit.figure_of_merit` finite, catching NUFFT / inversion collapse that
+would leave the cosmetic plot OK but the underlying visibilities
+all-zero / nan.
+"""
+import numpy as _sanity_np
+
+_fit_for_vis = analysis.fit_from(instance=instance)
+_mv = _sanity_np.asarray(_fit_for_vis.model_data)
+assert _sanity_np.isfinite(_mv).all(), (
+    "fit.model_data (visibilities) have nan/inf — NUFFT / inversion collapse"
+)
+assert float(_sanity_np.abs(_mv).sum()) > 0.0, (
+    "fit.model_data (visibilities) all-zero — NUFFT / inversion collapse"
+)
+_fom = float(_fit_for_vis.figure_of_merit)
+assert _sanity_np.isfinite(_fom), (
+    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
+)
+print(
+    f"  PASS Visualization Sanity (autogalaxy interferometer): "
+    f"|model_data|.sum() = {float(_sanity_np.abs(_mv).sum()):.4f}, "
+    f"figure_of_merit = {_fom:.4f}"
+)
