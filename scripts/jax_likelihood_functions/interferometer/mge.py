@@ -115,10 +115,7 @@ Assert that ``jax.jit(analysis.fit_from)(instance)`` returns a
 NumPy-path scalar. This is the part unblocked by
 ``_register_fit_interferometer_pytrees``.
 """
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
-register_model(model)
 
 instance = model.instance_from_prior_medians()
 

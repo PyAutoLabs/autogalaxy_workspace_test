@@ -180,10 +180,7 @@ Assert that ``jax.jit(analysis.fit_from)(instance)`` returns a
 ``FitInterferometer`` with a ``jax.Array`` ``log_likelihood`` matching the
 NumPy-path scalar.
 """
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
-register_model(model)
 
 instance = model.instance_from_prior_medians()
 

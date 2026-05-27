@@ -2,12 +2,11 @@
 Visualization JAX Pilot: Ellipse Analysis (autogalaxy)
 ======================================================
 
-Tests that ``VisualizerEllipse.visualize`` with
-``use_jax_for_visualization=True`` dispatches through the JIT-cached
-``fit_for_visualization`` path that the parent ``af.Analysis`` already
-provides. ``AnalysisEllipse.__init__`` passes ``**kwargs`` to its
-parent, so ``use_jax_for_visualization=True`` flows through to the
-PyAutoFit-level dispatch without a library-side change.
+Tests that ``VisualizerEllipse.visualize`` with ``use_jax=True`` dispatches
+through the JIT-cached ``fit_for_visualization`` path that the parent
+``af.Analysis`` already provides. Visualization follows ``use_jax``
+automatically — ``AnalysisEllipse.__init__`` passes ``**kwargs`` to its
+parent without a library-side change needed.
 
 Scope
 -----
@@ -16,8 +15,8 @@ Scope
 - Calls ``VisualizerEllipse.visualize`` only (not ``visualize_before_fit``).
 - Reuses the ``dataset/imaging/jax_test`` dataset that the
   ``jax_likelihood_functions`` scripts produce.
-- ``use_jax=True`` turns on the JAX path; ``use_jax_for_visualization=True``
-  routes ``Visualizer*.visualize`` through ``analysis.fit_for_visualization``.
+- ``use_jax=True`` turns on the JAX path and routes ``Visualizer*.visualize``
+  through ``analysis.fit_for_visualization``.
 """
 
 import shutil
@@ -36,10 +35,8 @@ conf.instance.push(
 
 import autofit as af
 import autogalaxy as ag
-from autofit.jax.pytrees import enable_pytrees, register_model
 from autogalaxy.ellipse.model.visualizer import VisualizerEllipse
 
-enable_pytrees()
 
 
 """
@@ -85,22 +82,20 @@ ellipse.major_axis = 1.0
 
 model = af.Collection(ellipses=af.Collection(ellipse_0=ellipse))
 
-register_model(model)
 
 
 """
 __Analysis__
 
-``use_jax=True`` turns on the JAX path; ``use_jax_for_visualization=True``
-tells the visualizer to dispatch through the JIT-cached
-``fit_for_visualization`` helper on the parent ``af.Analysis``.
-``AnalysisEllipse.__init__`` accepts ``**kwargs`` and forwards them to
-``super().__init__``, so no AnalysisEllipse signature change is needed.
+``use_jax=True`` turns on the JAX path. Visualization follows ``use_jax``
+automatically via the JIT-cached ``fit_for_visualization`` helper on the
+parent ``af.Analysis``. ``AnalysisEllipse.__init__`` accepts ``**kwargs``
+and forwards them to ``super().__init__``, so no AnalysisEllipse signature
+change is needed.
 """
 analysis = ag.AnalysisEllipse(
     dataset=dataset,
     use_jax=True,
-    use_jax_for_visualization=True,
     title_prefix="JAX_PILOT",
 )
 
@@ -122,7 +117,7 @@ __Run visualize on the eager-JAX fit__
 """
 instance = model.instance_from_prior_medians()
 
-print("Running VisualizerEllipse.visualize with use_jax_for_visualization=True ...")
+print("Running VisualizerEllipse.visualize with use_jax=True ...")
 VisualizerEllipse.visualize(
     analysis=analysis,
     paths=paths,

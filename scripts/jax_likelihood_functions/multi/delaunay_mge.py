@@ -222,10 +222,7 @@ The adapt-regularization linear solve has ~1% NumPy/JAX float-ordering
 drift — same as the single-dataset autogalaxy ``imaging/delaunay_mge.py``
 and ``interferometer/delaunay_mge.py``, so the rtol=1e-2 convention applies.
 """
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
-register_model(factor_graph.global_prior_model)
 
 analysis_np_list = [
     ag.AnalysisImaging(
