@@ -143,10 +143,7 @@ __JIT fit_from round-trip__
 Assert that ``jax.jit(analysis.fit_from)(instance)`` returns a ``FitEllipseSummed``
 with a ``jax.Array`` ``log_likelihood`` matching the NumPy-path scalar.
 """
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
-register_model(model)
 
 analysis_jit = ag.AnalysisEllipse(dataset=dataset, use_jax=True)
 fit_jit_fn = jax.jit(analysis_jit.fit_from)

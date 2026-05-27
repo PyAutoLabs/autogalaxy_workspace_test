@@ -104,10 +104,7 @@ Assert that ``jax.jit(analysis.fit_from)(instance)`` returns a ``FitImaging``
 with a ``jax.Array`` ``log_likelihood`` matching the NumPy-path scalar. This
 is the part unblocked by ``_register_fit_imaging_pytrees``.
 """
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
-register_model(model)
 
 instance = model.instance_from_prior_medians()
 

@@ -192,10 +192,7 @@ NumPy vs JAX float-ordering drift typically lands at ~1% — same as the
 single-dataset autogalaxy ``imaging/rectangular.py`` and
 ``interferometer/rectangular.py``, so the rtol=1e-2 convention applies.
 """
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
-register_model(factor_graph.global_prior_model)
 
 analysis_np_list = [
     ag.AnalysisImaging(

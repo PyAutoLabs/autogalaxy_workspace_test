@@ -199,10 +199,7 @@ drift — same as the single-dataset autogalaxy ``imaging/rectangular_mge.py``
 and ``interferometer/rectangular_mge.py``, so the rtol=1e-2 convention
 applies.
 """
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
-register_model(factor_graph.global_prior_model)
 
 analysis_np_list = [
     ag.AnalysisImaging(

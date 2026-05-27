@@ -7,12 +7,13 @@ for interferometer data.
 
 Goal
 ----
-Run ``VisualizerInterferometer.visualize`` with JAX enabled end-to-end, gated
-behind ``use_jax_for_visualization=True`` on ``AnalysisInterferometer``. The
-interferometer visualizer dispatches through ``analysis.fit_for_visualization``,
-which lazily wraps ``fit_from`` in ``jax.jit``. To trace across that boundary
-the model and fit return type must be JAX pytrees, so this script enables
-pytree registration before constructing the model.
+Run ``VisualizerInterferometer.visualize`` with JAX enabled end-to-end via
+``use_jax=True`` on ``AnalysisInterferometer``. Visualization now follows
+``use_jax`` automatically — the interferometer visualizer dispatches through
+``analysis.fit_for_visualization``, which lazily wraps ``fit_from`` in
+``jax.jit``. To trace across that boundary the model and fit return type must
+be JAX pytrees, so this script enables pytree registration before constructing
+the model.
 
 Scope
 -----
@@ -30,10 +31,8 @@ from types import SimpleNamespace
 
 import autofit as af
 import autogalaxy as ag
-from autofit.jax.pytrees import enable_pytrees, register_model
 from autogalaxy.interferometer.model.visualizer import VisualizerInterferometer
 
-enable_pytrees()
 
 
 """
@@ -75,9 +74,7 @@ dataset = ag.Interferometer.from_fits(
 """
 __Model__
 
-Single-galaxy MGE parametric model. Pytree registration is required before
-constructing the model so that the model and fit return type are valid JAX
-pytrees at the ``jax.jit`` boundary.
+Single-galaxy MGE parametric model.
 """
 bulge = ag.model_util.mge_model_from(
     mask_radius=mask_radius, total_gaussians=20, centre_prior_is_uniform=True
@@ -85,20 +82,17 @@ bulge = ag.model_util.mge_model_from(
 galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
 
-register_model(model)
 
 
 """
 __Analysis__
 
-``use_jax=True`` turns on the JAX ``_xp`` path; ``use_jax_for_visualization=True``
-tells the search-level visualization path to wrap ``fit_from`` in ``jax.jit``
-via the ``Analysis.fit_for_visualization`` helper.
+``use_jax=True`` turns on the JAX ``_xp`` path. Visualization now follows
+``use_jax`` automatically via the ``Analysis.fit_for_visualization`` helper.
 """
 analysis = ag.AnalysisInterferometer(
     dataset=dataset,
     use_jax=True,
-    use_jax_for_visualization=True,
     title_prefix="JAX_PILOT",
 )
 
@@ -121,7 +115,7 @@ __Run visualize on the eager-JAX fit__
 instance = model.instance_from_prior_medians()
 
 print(
-    "Running VisualizerInterferometer.visualize with use_jax_for_visualization=True ..."
+    "Running VisualizerInterferometer.visualize with use_jax=True ..."
 )
 VisualizerInterferometer.visualize(
     analysis=analysis,

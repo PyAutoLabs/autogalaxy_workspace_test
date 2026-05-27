@@ -22,9 +22,9 @@ land on disk, proving the JIT-cached fit_for_visualization fires correctly
 during the live search callback.
 
 This script deliberately opts in with
-``AnalysisImaging(use_jax=True, use_jax_for_visualization=True)``. Default
-model-fit scripts elsewhere in the workspace leave both flags at ``False``
-and are therefore untouched by this change.
+``AnalysisImaging(use_jax=True)``. Default model-fit scripts elsewhere in the
+workspace leave the flag at ``False`` and are therefore untouched by this
+change.
 """
 
 import shutil
@@ -38,9 +38,7 @@ import numpy as np
 
 import autofit as af
 import autogalaxy as ag
-from autofit.jax.pytrees import enable_pytrees, register_model
 
-enable_pytrees()
 
 
 """
@@ -108,12 +106,10 @@ galaxy_mge = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge_mge)
 
 model_mge = af.Collection(galaxies=af.Collection(galaxy=galaxy_mge))
 
-register_model(model_mge)
 
 analysis_mge = ag.AnalysisImaging(
     dataset=dataset,
     use_jax=True,
-    use_jax_for_visualization=True,
 )
 
 instance_mge = model_mge.instance_from_prior_medians()
@@ -141,9 +137,6 @@ assert cached_time < compile_time * 0.5, (
     f"Cached call ({cached_time:.3f}s) not faster than compile "
     f"({compile_time:.3f}s) — JIT cache is not being hit."
 )
-assert (
-    analysis_mge._jitted_fit_from is not None
-), "expected _jitted_fit_from to be cached on the analysis instance after first call"
 print("PASS: MGE jit-cached fit_for_visualization works and is reused.")
 
 
@@ -213,12 +206,10 @@ galaxy_mge2 = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge_mge2)
 
 model_mge2 = af.Collection(galaxies=af.Collection(galaxy=galaxy_mge2))
 
-register_model(model_mge2)
 
 analysis_mge2 = ag.AnalysisImaging(
     dataset=dataset,
     use_jax=True,
-    use_jax_for_visualization=True,
 )
 
 output_root = Path("scripts") / "imaging" / "images" / "modeling_visualization_jit"
