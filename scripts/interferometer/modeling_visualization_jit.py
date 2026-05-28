@@ -42,7 +42,6 @@ import autofit as af
 import autogalaxy as ag
 
 
-
 """
 __Dataset__
 
@@ -164,16 +163,14 @@ path is exercised (first-call compile already paid by the caching probe).
 """
 
 _mv = np.asarray(fit_2.model_data)
-assert np.isfinite(_mv).all(), (
-    "fit.model_data (visibilities) have nan/inf — NUFFT / inversion collapse"
-)
-assert float(np.abs(_mv).sum()) > 0.0, (
-    "fit.model_data (visibilities) all-zero — NUFFT / inversion collapse"
-)
+assert np.isfinite(
+    _mv
+).all(), "fit.model_data (visibilities) have nan/inf — NUFFT / inversion collapse"
+assert (
+    float(np.abs(_mv).sum()) > 0.0
+), "fit.model_data (visibilities) all-zero — NUFFT / inversion collapse"
 _fom = float(fit_2.figure_of_merit)
-assert np.isfinite(_fom), (
-    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
-)
+assert np.isfinite(_fom), f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
 print(
     f"  PASS Visualization Sanity (autogalaxy interferometer): "
     f"|model_data|.sum() = {float(np.abs(_mv).sum()):.4f}, "

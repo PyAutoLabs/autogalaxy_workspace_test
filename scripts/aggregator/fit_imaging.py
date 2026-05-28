@@ -215,7 +215,9 @@ def _agg_imaging():
     analysis_oversampled.visualize_before_fit(paths=search.paths, model=model)
     db = path.join(conf.instance.output_path, f"{db_file_imaging}.sqlite")
     agg = af.Aggregator.from_database(filename=db)
-    agg.add_directory(directory=path.join(conf.instance.output_path, "test_mode", db_file_imaging))
+    agg.add_directory(
+        directory=path.join(conf.instance.output_path, "test_mode", db_file_imaging)
+    )
     return agg
 
 

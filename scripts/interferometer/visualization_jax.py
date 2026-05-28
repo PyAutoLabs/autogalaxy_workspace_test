@@ -34,7 +34,6 @@ import autogalaxy as ag
 from autogalaxy.interferometer.model.visualizer import VisualizerInterferometer
 
 
-
 """
 __Dataset__
 
@@ -83,7 +82,6 @@ galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
 
 
-
 """
 __Analysis__
 
@@ -114,9 +112,7 @@ __Run visualize on the eager-JAX fit__
 """
 instance = model.instance_from_prior_medians()
 
-print(
-    "Running VisualizerInterferometer.visualize with use_jax=True ..."
-)
+print("Running VisualizerInterferometer.visualize with use_jax=True ...")
 VisualizerInterferometer.visualize(
     analysis=analysis,
     paths=paths,
@@ -140,16 +136,16 @@ import numpy as _sanity_np
 
 _fit_for_vis = analysis.fit_from(instance=instance)
 _mv = _sanity_np.asarray(_fit_for_vis.model_data)
-assert _sanity_np.isfinite(_mv).all(), (
-    "fit.model_data (visibilities) have nan/inf — NUFFT / inversion collapse"
-)
-assert float(_sanity_np.abs(_mv).sum()) > 0.0, (
-    "fit.model_data (visibilities) all-zero — NUFFT / inversion collapse"
-)
+assert _sanity_np.isfinite(
+    _mv
+).all(), "fit.model_data (visibilities) have nan/inf — NUFFT / inversion collapse"
+assert (
+    float(_sanity_np.abs(_mv).sum()) > 0.0
+), "fit.model_data (visibilities) all-zero — NUFFT / inversion collapse"
 _fom = float(_fit_for_vis.figure_of_merit)
-assert _sanity_np.isfinite(_fom), (
-    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
-)
+assert _sanity_np.isfinite(
+    _fom
+), f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
 print(
     f"  PASS Visualization Sanity (autogalaxy interferometer): "
     f"|model_data|.sum() = {float(_sanity_np.abs(_mv).sum()):.4f}, "

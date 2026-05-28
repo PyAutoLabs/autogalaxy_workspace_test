@@ -39,7 +39,6 @@ import autofit as af
 import autogalaxy as ag
 
 
-
 """
 __Dataset__
 
@@ -139,9 +138,7 @@ exercised (compile already paid above).
 """
 
 _fom = float(fit_2.figure_of_merit)
-assert np.isfinite(_fom), (
-    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
-)
+assert np.isfinite(_fom), f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
 print(
     f"  PASS Visualization Sanity (autogalaxy ellipse): "
     f"figure_of_merit = {_fom:.4f}"

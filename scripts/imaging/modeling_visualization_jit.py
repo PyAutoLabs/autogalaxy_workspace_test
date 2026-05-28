@@ -40,7 +40,6 @@ import autofit as af
 import autogalaxy as ag
 
 
-
 """
 __Dataset__
 
@@ -154,16 +153,14 @@ script's cached `fit_2` from Part 1 so the warm JIT path is exercised
 """
 
 _model_image = np.asarray(fit_2.model_data)
-assert np.isfinite(_model_image).all(), (
-    "fit.model_data has nan/inf — JAX-trace mismatch or inversion collapse"
-)
-assert float(np.abs(_model_image).sum()) > 0.0, (
-    "fit.model_data all-zero — light profile evaluation collapsed"
-)
+assert np.isfinite(
+    _model_image
+).all(), "fit.model_data has nan/inf — JAX-trace mismatch or inversion collapse"
+assert (
+    float(np.abs(_model_image).sum()) > 0.0
+), "fit.model_data all-zero — light profile evaluation collapsed"
 _fom = float(fit_2.figure_of_merit)
-assert np.isfinite(_fom), (
-    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
-)
+assert np.isfinite(_fom), f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
 print(
     f"  PASS Visualization Sanity (autogalaxy imaging): "
     f"|model_data|.sum() = {float(np.abs(_model_image).sum()):.4f}, "

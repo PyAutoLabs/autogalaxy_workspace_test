@@ -42,7 +42,6 @@ import autogalaxy as ag
 from autogalaxy.imaging.model.visualizer import VisualizerImaging
 
 
-
 """
 __Dataset__
 """
@@ -84,7 +83,6 @@ galaxy_bulge = ag.model_util.mge_model_from(
 )
 galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=galaxy_bulge)
 model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
-
 
 
 """
@@ -141,16 +139,16 @@ import numpy as _sanity_np
 
 _fit_for_vis = analysis.fit_from(instance=instance)
 _model_image = _sanity_np.asarray(_fit_for_vis.model_data)
-assert _sanity_np.isfinite(_model_image).all(), (
-    "fit.model_data has nan/inf — JAX-trace mismatch or inversion collapse"
-)
-assert float(_sanity_np.abs(_model_image).sum()) > 0.0, (
-    "fit.model_data all-zero — light profile evaluation collapsed"
-)
+assert _sanity_np.isfinite(
+    _model_image
+).all(), "fit.model_data has nan/inf — JAX-trace mismatch or inversion collapse"
+assert (
+    float(_sanity_np.abs(_model_image).sum()) > 0.0
+), "fit.model_data all-zero — light profile evaluation collapsed"
 _fom = float(_fit_for_vis.figure_of_merit)
-assert _sanity_np.isfinite(_fom), (
-    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
-)
+assert _sanity_np.isfinite(
+    _fom
+), f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
 print(
     f"  PASS Visualization Sanity (autogalaxy imaging): "
     f"|model_data|.sum() = {float(_sanity_np.abs(_model_image).sum()):.4f}, "

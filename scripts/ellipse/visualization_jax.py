@@ -38,7 +38,6 @@ import autogalaxy as ag
 from autogalaxy.ellipse.model.visualizer import VisualizerEllipse
 
 
-
 """
 __Dataset__
 
@@ -81,7 +80,6 @@ ellipse.ell_comps.ell_comps_1 = 0.05
 ellipse.major_axis = 1.0
 
 model = af.Collection(ellipses=af.Collection(ellipse_0=ellipse))
-
 
 
 """
@@ -127,9 +125,9 @@ VisualizerEllipse.visualize(
 
 # `fit_ellipse.png` is one of the artifacts that the non-JAX
 # `ellipse/visualization.py` script asserts on; check the same one here.
-assert (image_path / "fit_ellipse.png").exists(), (
-    "fit_ellipse.png was not produced by the JAX-backed visualizer"
-)
+assert (
+    image_path / "fit_ellipse.png"
+).exists(), "fit_ellipse.png was not produced by the JAX-backed visualizer"
 print("PILOT SUCCEEDED — JAX-backed ellipse visualization produced fit_ellipse.png.")
 
 
@@ -152,9 +150,9 @@ import numpy as _sanity_np
 
 _fit_for_vis = analysis.fit_from(instance=instance)
 _fom = float(_fit_for_vis.figure_of_merit)
-assert _sanity_np.isfinite(_fom), (
-    f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
-)
+assert _sanity_np.isfinite(
+    _fom
+), f"figure_of_merit = {_fom} — chi² nan/inf, fit collapsed"
 print(
     f"  PASS Visualization Sanity (autogalaxy ellipse): "
     f"figure_of_merit = {_fom:.4f}"
