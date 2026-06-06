@@ -32,3 +32,4 @@ jax_likelihood_functions/multi/delaunay.py
 jax_likelihood_functions/multi/delaunay_mge.py
 imaging/model_fit.py
 imaging/visualization.py
+latent/latent_nan_robustness.py
