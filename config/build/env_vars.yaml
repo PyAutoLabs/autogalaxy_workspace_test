@@ -65,6 +65,13 @@ overrides:
   # PYAUTO_FAST_PLOTS and PYAUTO_SMALL_DATASETS must be unset.
   - pattern: "ellipse/visualization.py"
     unset: [PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
+  # ellipse/visualization_jax exercises the JAX-capable ellipse visualization
+  # path and asserts plot files land on disk.
+  - pattern: "ellipse/visualization_jax"
+    unset: [PYAUTO_DISABLE_JAX, PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
+  # ellipse/modeling_visualization_jit — live Nautilus + JAX visualization path.
+  - pattern: "ellipse/modeling_visualization_jit"
+    unset: [PYAUTO_DISABLE_JAX, PYAUTO_SMALL_DATASETS, PYAUTO_TEST_MODE, PYAUTO_FAST_PLOTS]
   # modeling_visualization_jit tests the JIT-cached visualization path:
   # needs JAX enabled (Part 1 asserts log_likelihood is a jax.Array), the
   # full-resolution mask, a real Nautilus run for Part 2, and savefig active
