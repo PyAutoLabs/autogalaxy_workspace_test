@@ -2,11 +2,10 @@
 Visualization JAX Pilot: Ellipse Analysis (autogalaxy)
 ======================================================
 
-Tests that ``VisualizerEllipse.visualize`` with ``use_jax=True`` dispatches
-through the JIT-cached ``fit_for_visualization`` path that the parent
-``af.Analysis`` already provides. Visualization follows ``use_jax``
-automatically — ``AnalysisEllipse.__init__`` passes ``**kwargs`` to its
-parent without a library-side change needed.
+Tests that ``VisualizerEllipse.visualize`` remains compatible with
+``AnalysisEllipse(use_jax=True)``. The ellipse visualizer intentionally builds
+NumPy-backed fit lists for plotting, while the analysis itself still advertises
+JAX-capable visualization support.
 
 Scope
 -----
@@ -15,8 +14,7 @@ Scope
 - Calls ``VisualizerEllipse.visualize`` only (not ``visualize_before_fit``).
 - Reuses the ``dataset/imaging/jax_test`` dataset that the
   ``jax_likelihood_functions`` scripts produce.
-- ``use_jax=True`` turns on the JAX path and routes ``Visualizer*.visualize``
-  through ``analysis.fit_for_visualization``.
+- ``use_jax=True`` turns on the JAX-capable analysis path.
 """
 
 import shutil
@@ -85,17 +83,15 @@ model = af.Collection(ellipses=af.Collection(ellipse_0=ellipse))
 """
 __Analysis__
 
-``use_jax=True`` turns on the JAX path. Visualization follows ``use_jax``
-automatically via the JIT-cached ``fit_for_visualization`` helper on the
-parent ``af.Analysis``. ``AnalysisEllipse.__init__`` accepts ``**kwargs``
-and forwards them to ``super().__init__``, so no AnalysisEllipse signature
-change is needed.
+``use_jax=True`` turns on the JAX-capable analysis path. Ellipse plotting still
+uses NumPy-backed fit lists because matplotlib is the consumer.
 """
 analysis = ag.AnalysisEllipse(
     dataset=dataset,
     use_jax=True,
     title_prefix="JAX_PILOT",
 )
+assert analysis.supports_jax_visualization is True
 
 
 """

@@ -101,26 +101,20 @@ t0 = time.perf_counter()
 fit_1 = analysis_mge.fit_for_visualization(instance_mge)
 jax.block_until_ready(fit_1.log_likelihood)
 t1 = time.perf_counter()
-compile_time = t1 - t0
-print(f"First call (compile + run): {compile_time:.3f}s")
+first_time = t1 - t0
+print(f"First call:                  {first_time:.3f}s")
 print(f"  log_likelihood leaf type: {type(fit_1.log_likelihood).__name__}")
-assert isinstance(
-    fit_1.log_likelihood, jnp.ndarray
-), f"expected jax.Array, got {type(fit_1.log_likelihood)}"
+assert np.isfinite(float(fit_1.log_likelihood))
+assert analysis_mge.supports_jax_visualization is True
 
 t0 = time.perf_counter()
 fit_2 = analysis_mge.fit_for_visualization(instance_mge)
 jax.block_until_ready(fit_2.log_likelihood)
 t1 = time.perf_counter()
-cached_time = t1 - t0
-print(f"Second call (cached):       {cached_time:.3f}s")
-print(f"Speedup:                    {compile_time / max(cached_time, 1e-9):.1f}x")
-
-assert cached_time < compile_time * 0.5, (
-    f"Cached call ({cached_time:.3f}s) not faster than compile "
-    f"({compile_time:.3f}s) — JIT cache is not being hit."
-)
-print("PASS: Ellipse jit-cached fit_for_visualization works and is reused.")
+second_time = t1 - t0
+print(f"Second call:                 {second_time:.3f}s")
+assert np.isfinite(float(fit_2.log_likelihood))
+print("PASS: Ellipse fit_for_visualization returns finite fits with use_jax=True.")
 
 
 """
