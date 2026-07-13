@@ -17,7 +17,7 @@ scripts/                     Integration-test scripts run on the build server
   jax_likelihood_functions/  JAX batched-likelihood tests
   jax_grad/ jax_assertions/  JAX gradient + assertion tests
   latent/                    Latent-variable tests
-failed/                      One log per failing script (written by run_all_scripts.sh)
+failed/                      One log per failing script
 config/ output/              YAML config and runtime fit results
 ```
 
@@ -46,13 +46,6 @@ It executes the curated entries in `smoke_tests.txt`, applying per-entry environ
 `PYAUTO_FAST_PLOTS=1` — with **per-script `unset`/override** blocks where a test genuinely needs a
 real sampler run or full-resolution data. So CI is *not* "searches run for real" by default; it is
 fast-mode with targeted exceptions. A failure under these flags signals a real problem.
-
-For a local **full sweep** of every script under `scripts/`, use the stateless runner (logs each
-failure to `failed/`):
-
-```bash
-bash run_all_scripts.sh
-```
 
 ## Sandboxed / restricted runs
 
