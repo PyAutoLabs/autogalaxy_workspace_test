@@ -1,0 +1,25 @@
+# Advisory-tier scripts for mode=release validation.
+#
+# These are known-slow REAL-SEARCH scripts (real Nautilus fits + finite-difference
+# JAX gradients) that flake around the per-script timeout cap under CI load. Unlike
+# no_run.yaml, an ADVISORY entry does NOT skip the script — it STILL RUNS and is
+# reported — but a *timeout* on it is advisory (YELLOW), not a release-blocking RED.
+# A timeout on any script NOT listed here is still RED. Only timeouts are de-gated;
+# a genuine exception on an advisory script is still a failure.
+#
+# This is what lets mode=release gate on correctness instead of the perf-flake tail.
+# Growing this list never erodes coverage (the script keeps running), so it converges
+# where no_run SLOW-skips whack-a-mole. Durable speedups that let entries be removed
+# are the Profiling Agent's job. See PyAutoHeart docs/release_validation.md and #74.
+#
+# Format mirrors no_run.yaml: entries with '/' substring-match the file path
+# (include '.py' to anchor); marker `# ADVISORY <YYYY-MM-DD> - <reason>`.
+
+- jax_likelihood_functions/interferometer/mge.py # ADVISORY 2026-07-14 - real-search JAX interferometer MGE likelihood; near-cap flake under mode=release CI load (PyAutoHeart#74)
+- jax_likelihood_functions/interferometer/mge_group.py # ADVISORY 2026-07-14 - real-search JAX interferometer MGE-group likelihood; near-cap flake (PyAutoHeart#74)
+- jax_likelihood_functions/interferometer/delaunay.py # ADVISORY 2026-07-14 - real-search JAX interferometer Delaunay likelihood; near-cap flake (PyAutoHeart#74)
+- jax_likelihood_functions/interferometer/delaunay_mge.py # ADVISORY 2026-07-14 - real-search JAX interferometer Delaunay-MGE likelihood; near-cap flake (PyAutoHeart#74)
+- jax_likelihood_functions/interferometer/rectangular_mge.py # ADVISORY 2026-07-14 - real-search JAX interferometer rectangular-MGE likelihood; near-cap flake (PyAutoHeart#74)
+- jax_likelihood_functions/imaging/delaunay_mge.py # ADVISORY 2026-07-14 - real-search JAX imaging Delaunay-MGE likelihood; near-cap flake (PyAutoHeart#74)
+- jax_grad/interferometer/mge.py # ADVISORY 2026-07-14 - finite-difference JAX interferometer MGE gradient; near-cap flake (PyAutoHeart#74)
+- jax_grad/multi/mge.py # ADVISORY 2026-07-14 - finite-difference JAX multi-band MGE gradient; near-cap flake (PyAutoHeart#74)
