@@ -83,11 +83,15 @@ summary = latent_samples.summary()
 instance = latent_samples.median_pdf()
 
 surviving = [k for k in LATENT_FUNCTIONS if hasattr(instance, k)]
-assert surviving, "No latents survived — expected at least total_galaxy_0_flux variants."
+assert (
+    surviving
+), "No latents survived — expected at least total_galaxy_0_flux variants."
 
 for key in surviving:
     value = float(getattr(instance, key))
-    assert math.isfinite(value), f"Surviving latent '{key}' is not finite (got {value})."
+    assert math.isfinite(
+        value
+    ), f"Surviving latent '{key}' is not finite (got {value})."
 
 print(
     f"PASSED: latent summary survived arbitrary NaN injection "

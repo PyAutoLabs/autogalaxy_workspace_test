@@ -121,9 +121,7 @@ reg_matrix_jnp = regularization.regularization_matrix_from(
     linear_obj=_LinearObjStub(jnp.asarray(pixel_points)), xp=jnp
 )
 
-npt.assert_allclose(
-    np.asarray(reg_matrix_np), np.asarray(reg_matrix_jnp), atol=1.0e-8
-)
+npt.assert_allclose(np.asarray(reg_matrix_np), np.asarray(reg_matrix_jnp), atol=1.0e-8)
 
 
 print("matern_regularization: all assertions passed")
