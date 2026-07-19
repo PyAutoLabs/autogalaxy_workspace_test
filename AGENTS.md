@@ -73,7 +73,7 @@ write from a header skim silently deletes every section below the header.
 
 ## Related Repos
 
-- Source libs: `../PyAutoGalaxy`, `../PyAutoArray`, `../PyAutoFit`, `../PyAutoConf`.
+- Source libs: `../PyAutoGalaxy`, `../PyAutoArray`, `../PyAutoFit`, `../PyAutoNerves`.
 - `../autogalaxy_workspace` — the user-facing workspace; `../HowToGalaxy` — the tutorial series.
 - `../PyAutoHands` — CI / build tooling.
 - `../autolens_assistant` — science-assistant workspace (literature wiki).

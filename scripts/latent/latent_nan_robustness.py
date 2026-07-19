@@ -12,7 +12,7 @@ samples then carried different ``Sample.kwargs`` key sets, and
 ``Samples.summary()`` raised ``KeyError`` building its model from batch 0's
 keys.
 
-The ``PYAUTO_LATENT_NAN_INJECT=stride:N`` knob (``autoconf.test_mode``) sets
+The ``PYAUTO_LATENT_NAN_INJECT=stride:N`` knob (``autonerves.test_mode``) sets
 NaN on latent column 0 (``total_galaxy_0_flux``) for every sample whose
 absolute index is a non-zero multiple of ``N``. With ``N >= batch_size`` batch 0
 stays fully finite (seeds the model with both latent keys) and a later batch
