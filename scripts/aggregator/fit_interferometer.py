@@ -10,8 +10,8 @@ import os
 import shutil
 from os import path
 
-from autoconf import conf
-from autoconf.conf import with_config
+from autogalaxy import conf
+from autogalaxy import with_config
 import autofit as af
 import autogalaxy as ag
 from autogalaxy import fixtures
