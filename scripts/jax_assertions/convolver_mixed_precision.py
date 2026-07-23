@@ -19,9 +19,7 @@ locks in the actual fix.
 
 Library unit tests stay numpy-only by project convention; this cross-xp
 coverage lives here in workspace_test.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

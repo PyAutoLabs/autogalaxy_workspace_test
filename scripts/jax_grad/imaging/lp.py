@@ -2,9 +2,7 @@
 Tests that jax.value_and_grad can compute finite, non-NaN gradients of the log-likelihood
 for an autogalaxy imaging model with a parametric linear Sersic light profile. This tests
 the core JAX differentiability that enables gradient-based inference.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

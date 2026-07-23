@@ -16,9 +16,7 @@ Two paths are exercised:
 
 Note: interferometer does not use over-sampling — no ``apply_over_sampling``
 calls appear here.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

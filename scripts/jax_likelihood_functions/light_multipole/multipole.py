@@ -17,9 +17,7 @@ Gaussian priors on the four multipole component parameters
 ``multipole_4_comps_1``). The library does not yet ship default priors for
 those — this keeps the test self-contained until the workspace priors follow-up
 lands.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

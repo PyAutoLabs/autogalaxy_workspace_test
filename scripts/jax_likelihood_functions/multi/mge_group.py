@@ -15,9 +15,7 @@ Two paths are exercised:
 Uses **option B** — per-band ``galaxy.bulge`` MGE ``ell_comps`` priors via
 ``model.copy()`` + ``af.GaussianPrior`` on each ``AnalysisFactor``. The extra
 galaxies stay shared across bands.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

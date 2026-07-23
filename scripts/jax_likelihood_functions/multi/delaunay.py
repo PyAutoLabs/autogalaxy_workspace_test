@@ -19,9 +19,7 @@ The mesh parameters and outer regularization params stay shared.
 
 Path A asserts JIT round-trip parity with the vmap result (pixelized path
 differs between use_jax=True and use_jax=False).
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

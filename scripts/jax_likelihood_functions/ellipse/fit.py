@@ -8,9 +8,7 @@ Prints the numpy-path reference numbers that prompt 7 will JIT-assert against
 to ``rtol=1e-4``. Run this script to capture the baseline log-likelihood,
 chi-squared, noise-normalisation, and figure-of-merit values for a single
 ellipse fit to the simulated dataset.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

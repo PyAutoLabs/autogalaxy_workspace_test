@@ -16,9 +16,7 @@ Two paths are exercised when run directly:
 
 1. ``fitness._vmap`` batch evaluation.
 2. ``jax.jit(analysis.fit_from)`` scalar round-trip.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

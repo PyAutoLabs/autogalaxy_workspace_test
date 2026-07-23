@@ -22,9 +22,7 @@ Scope
 - Re-uses the ``jax_test`` interferometer dataset from
   ``jax_likelihood_functions/interferometer``.
 - Single-galaxy autogalaxy model — no lens/source split, no mass profile.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

@@ -12,9 +12,7 @@ JIT-assert against to ``rtol=1e-4``.
 Prints the numpy-path log-likelihood, chi-squared, noise-normalisation, and
 figure-of-merit values for a single ellipse + m=4 multipole fit to the
 simulated dataset.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

@@ -7,9 +7,7 @@ the multi-dataset likelihood path.
 
 Uses option B — per-band MGE ``ell_comps_{0,1}`` priors via ``model.copy()`` + a fresh
 ``af.GaussianPrior`` pair re-tied across every gaussian within each basis.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

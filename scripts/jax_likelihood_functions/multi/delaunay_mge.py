@@ -24,9 +24,7 @@ differs between use_jax=True and use_jax=False).
 
 Note: If JAX 0.7's ``pytype_aval_mappings`` removal breaks this script,
 mark JAX_07_BROKEN and mirror imaging's commented-out treatment.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

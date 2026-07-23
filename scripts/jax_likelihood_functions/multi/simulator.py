@@ -18,9 +18,7 @@ Output files (under ``dataset/multi/jax_test/``):
 - ``{g,r}_noise_map.fits`` — per-pixel 1-sigma noise maps
 - ``galaxies.json`` — the g-band ``Galaxies`` (the r-band variant differs only
   by ``bulge.intensity``), for reproducibility
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

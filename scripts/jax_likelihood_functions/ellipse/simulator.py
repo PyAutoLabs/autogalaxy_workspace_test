@@ -19,9 +19,7 @@ Output files (under ``dataset/ellipse/jax_test/``):
 - ``psf.fits`` — the Gaussian PSF kernel used during simulation
 - ``noise_map.fits`` — per-pixel 1-sigma noise map
 - ``galaxies.json`` — the exact ``Galaxies`` used, for reproducibility
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

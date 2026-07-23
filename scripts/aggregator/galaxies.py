@@ -3,9 +3,7 @@ Integration test: aggregator Galaxies scrape.
 
 Exercises GalaxiesAgg randomly_drawn_via_pdf_gen_from and
 all_above_weight_gen_from with weight verification.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
