@@ -19,9 +19,16 @@ Output files (under ``dataset/multi/jax_test/``):
 - ``galaxies.json`` — the g-band ``Galaxies`` (the r-band variant differs only
   by ``bulge.intensity``), for reproducibility
 """
-# ENV: jax full_datasets
-# JAX likelihood functions test JIT compilation; need JAX enabled
-# and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
 
 from pathlib import Path
 

@@ -18,9 +18,16 @@ Two paths are exercised:
    ``AdaptImages.image_plane_mesh_grid_for_galaxy`` resolving fresh-Galaxy
    lookups via the path-tuple list.
 """
-# ENV: jax full_datasets
-# JAX likelihood functions test JIT compilation; need JAX enabled
-# and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
 
 import time
 from os import path

@@ -21,9 +21,16 @@ Two paths are exercised when run directly:
 1. ``fitness._vmap`` batch evaluation.
 2. ``jax.jit(analysis.fit_from)`` scalar round-trip.
 """
-# ENV: jax full_datasets
-# JAX likelihood functions test JIT compilation; need JAX enabled
-# and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
 
 import time
 from os import path

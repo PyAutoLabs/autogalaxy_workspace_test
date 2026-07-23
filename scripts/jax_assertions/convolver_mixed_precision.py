@@ -20,9 +20,16 @@ locks in the actual fix.
 Library unit tests stay numpy-only by project convention; this cross-xp
 coverage lives here in workspace_test.
 """
-# ENV: full_datasets
-# Loads a pre-committed 80x80 array; SMALL_DATASETS would cap the
-# mask to 15x15 and break the shape assertion.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+Loads a pre-committed 80x80 array; SMALL_DATASETS would cap the mask to
+15x15 and break the shape assertion.
+
+ENV: full_datasets
+"""
 
 import jax.numpy as jnp
 import numpy as np

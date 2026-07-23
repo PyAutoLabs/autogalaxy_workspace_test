@@ -5,8 +5,15 @@ Exercises FitInterferometerAgg randomly_drawn_via_pdf_gen_from,
 all_above_weight_gen_from, and adapt_images round-trip.
 Also exercises InterferometerAgg dataset_gen_from.
 """
-# ENV: full_datasets
-# Asserts grid metadata that depends on full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+Asserts grid metadata that depends on full-size datasets.
+
+ENV: full_datasets
+"""
 
 import os
 import shutil

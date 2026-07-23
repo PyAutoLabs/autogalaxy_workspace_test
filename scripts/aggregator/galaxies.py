@@ -4,8 +4,15 @@ Integration test: aggregator Galaxies scrape.
 Exercises GalaxiesAgg randomly_drawn_via_pdf_gen_from and
 all_above_weight_gen_from with weight verification.
 """
-# ENV: full_datasets
-# Asserts grid metadata that depends on full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+Asserts grid metadata that depends on full-size datasets.
+
+ENV: full_datasets
+"""
 
 import os
 import shutil

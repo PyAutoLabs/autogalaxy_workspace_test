@@ -14,9 +14,16 @@ Prints the numpy-path log-likelihood, chi-squared, noise-normalisation, and
 figure-of-merit values for a single ellipse + m=4 scaled multipole fit to the
 simulated dataset.
 """
-# ENV: jax full_datasets
-# JAX likelihood functions test JIT compilation; need JAX enabled
-# and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
 
 from os import path
 

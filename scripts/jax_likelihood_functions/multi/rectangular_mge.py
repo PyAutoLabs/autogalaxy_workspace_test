@@ -21,9 +21,16 @@ The MGE bulge parameters stay shared across bands.
 Path A asserts JIT round-trip parity with the vmap result (pixelized path
 differs between use_jax=True and use_jax=False).
 """
-# ENV: jax full_datasets
-# JAX likelihood functions test JIT compilation; need JAX enabled
-# and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
 
 from os import path
 
