@@ -67,5 +67,7 @@ overrides:
     set: { PYAUTO_DISABLE_JAX: "0" }
   - pattern: "interferometer/modeling_visualization_jit"
     set: { PYAUTO_DISABLE_JAX: "0" }
-  - pattern: "quantity/visualization_jax"
-    set: { PYAUTO_DISABLE_JAX: "0" }
+  # (The `quantity/visualization_jax` override was removed on 2026-07-23.
+  # Commit 49e53de, "chore: remove quantity scripts and config entries"
+  # (2026-05-22), deleted scripts/quantity/ but left this one behind, so it
+  # had matched no file for two months.)
