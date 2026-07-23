@@ -23,6 +23,9 @@ different numerical path than under ``use_jax=False`` (the JAX path matches
 ``fit.log_likelihood`` only when routed through ``fit_from``, which
 ``FactorGraphModel`` does not expose).
 """
+# ENV: jax full_datasets
+# JAX likelihood functions test JIT compilation; need JAX enabled
+# and full-size datasets.
 
 from os import path
 

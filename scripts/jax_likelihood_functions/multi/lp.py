@@ -20,6 +20,9 @@ Uses **option B** — per-band ``galaxy.bulge.ell_comps_{0,1}`` priors via
 ``model.copy()`` + ``af.GaussianPrior`` on each ``AnalysisFactor``. All other
 parameters stay shared across the g and r bands.
 """
+# ENV: jax full_datasets
+# JAX likelihood functions test JIT compilation; need JAX enabled
+# and full-size datasets.
 
 from os import path
 

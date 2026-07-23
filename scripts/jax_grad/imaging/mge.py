@@ -3,6 +3,9 @@ Tests that jax.value_and_grad can compute finite, non-NaN gradients of the log-l
 for an autogalaxy imaging model with a Multi-Gaussian Expansion (MGE) linear basis light
 profile. This tests the core JAX differentiability that enables gradient-based inference.
 """
+# ENV: jax full_datasets
+# JAX gradient scripts exercise jax.value_and_grad on the full
+# likelihood path; need JAX enabled and full-size datasets.
 
 import numpy as np
 import jax

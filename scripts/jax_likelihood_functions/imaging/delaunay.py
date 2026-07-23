@@ -18,6 +18,9 @@ Two paths are exercised:
    ``AdaptImages.image_plane_mesh_grid_for_galaxy`` resolving fresh-Galaxy
    lookups via the path-tuple list.
 """
+# ENV: jax full_datasets
+# JAX likelihood functions test JIT compilation; need JAX enabled
+# and full-size datasets.
 
 import time
 from os import path

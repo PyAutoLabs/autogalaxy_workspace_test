@@ -29,6 +29,9 @@ __Contents__
 - **Serialization Round-Trip:** dict/from_dict preserves prior count and path structure.
 - **Model Info:** Human-readable info string contains expected component names.
 """
+# ENV: full_datasets
+# Asserts exact prior_count; SMALL_DATASETS reduces total_gaussians
+# and changes prior_count.
 
 import autofit as af
 import autogalaxy as ag

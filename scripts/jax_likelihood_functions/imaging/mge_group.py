@@ -13,6 +13,9 @@ Two paths are exercised:
    registration added to ``AnalysisImaging._register_fit_imaging_pytrees`` —
    this path exercises the full ``FitImaging`` return value flattening.
 """
+# ENV: jax full_datasets
+# JAX likelihood functions test JIT compilation; need JAX enabled
+# and full-size datasets.
 
 import time
 from os import path

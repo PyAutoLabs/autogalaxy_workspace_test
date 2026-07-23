@@ -5,6 +5,8 @@ Exercises FitInterferometerAgg randomly_drawn_via_pdf_gen_from,
 all_above_weight_gen_from, and adapt_images round-trip.
 Also exercises InterferometerAgg dataset_gen_from.
 """
+# ENV: full_datasets
+# Asserts grid metadata that depends on full-size datasets.
 
 import os
 import shutil

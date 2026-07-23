@@ -23,6 +23,9 @@ Scope
   ``jax_likelihood_functions/interferometer``.
 - Single-galaxy autogalaxy model — no lens/source split, no mass profile.
 """
+# ENV: jax full_datasets real_plots
+# JIT-cached fit_for_visualization path (interferometer); needs
+# JAX enabled, real plots and full-resolution data.
 
 import shutil
 from os import path

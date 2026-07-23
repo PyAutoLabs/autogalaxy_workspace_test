@@ -4,6 +4,8 @@ Integration test: aggregator Galaxies scrape.
 Exercises GalaxiesAgg randomly_drawn_via_pdf_gen_from and
 all_above_weight_gen_from with weight verification.
 """
+# ENV: full_datasets
+# Asserts grid metadata that depends on full-size datasets.
 
 import os
 import shutil
