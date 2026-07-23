@@ -33,6 +33,9 @@ Each scenario calls ``VisualizerEllipse.visualize_before_fit`` and
 ``VisualizerEllipse.visualize`` and asserts the expected PNGs exist.
 Numpy-only — no JAX imports.
 """
+# ENV: full_datasets real_plots
+# Asserts subplot PNG / FITS land on disk (needs real plots) and
+# reads full-resolution data.
 
 import shutil
 import subprocess

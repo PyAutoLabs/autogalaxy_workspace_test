@@ -23,6 +23,9 @@ This script deliberately opts in with
 Default ellipse model-fit scripts elsewhere in the workspace leave the flag
 at ``False`` and are therefore untouched by this change.
 """
+# ENV: real_output
+# Live Nautilus + JAX/JIT visualization path: real search, JAX,
+# full-resolution mask and real savefig.
 
 import shutil
 import subprocess

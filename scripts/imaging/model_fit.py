@@ -8,6 +8,9 @@ Exercises ``AnalysisImaging`` -> ``FitImaging`` with a Nautilus search.
 Galaxy: a single ``Sersic`` bulge — no lens / mass / source split (this is autogalaxy,
 not autolens).
 """
+# ENV: full_datasets
+# Reads pre-committed full-resolution FITS; the SMALL_DATASETS cap
+# would mismatch the committed-shape mask.
 
 import os
 from os import path

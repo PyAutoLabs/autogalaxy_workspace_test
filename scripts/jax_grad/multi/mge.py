@@ -8,6 +8,9 @@ the multi-dataset likelihood path.
 Uses option B — per-band MGE ``ell_comps_{0,1}`` priors via ``model.copy()`` + a fresh
 ``af.GaussianPrior`` pair re-tied across every gaussian within each basis.
 """
+# ENV: jax full_datasets
+# JAX gradient scripts exercise jax.value_and_grad on the full
+# likelihood path; need JAX enabled and full-size datasets.
 
 import numpy as np
 import jax

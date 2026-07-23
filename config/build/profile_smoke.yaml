@@ -21,80 +21,8 @@ defaults:
   NUMBA_CACHE_DIR: "/tmp/numba_cache"       # Writable cache dir for numba
   MPLCONFIGDIR: "/tmp/matplotlib"           # Writable config dir for matplotlib
 
-overrides:
-  # JAX likelihood functions test JIT compilation — need JAX enabled and full-size datasets
-  - pattern: "jax_likelihood_functions/"
-    unset: [PYAUTO_SMALL_DATASETS, PYAUTO_DISABLE_JAX]
-  # JAX gradient scripts exercise jax.value_and_grad on the full likelihood path —
-  # need JAX enabled and full-size datasets, same as jax_likelihood_functions/.
-  - pattern: "jax_grad/"
-    unset: [PYAUTO_SMALL_DATASETS, PYAUTO_DISABLE_JAX]
-  # convolver_mixed_precision asserts the convolver dispatches mixed-precision
-  # arrays cleanly. It loads a pre-committed 80x80 array; PYAUTO_SMALL_DATASETS=1
-  # would cap the mask to 15x15 and the assertion would fail with a shape mismatch
-  # before the precision check even ran.
-  - pattern: "jax_assertions/convolver_mixed_precision"
-    unset: [PYAUTO_SMALL_DATASETS]
-  # Model composition scripts assert exact prior_count for configured gaussian_per_basis.
-  # PYAUTO_SMALL_DATASETS=1 reduces total_gaussians and changes prior_count.
-  - pattern: "model_composition/"
-    unset: [PYAUTO_SMALL_DATASETS]
-  # Aggregator scripts assert grid metadata (e.g. over_sample_size_lp == 5)
-  # that depends on full-size datasets. PYAUTO_SMALL_DATASETS=1 reduces these.
-  - pattern: "aggregator/"
-    unset: [PYAUTO_SMALL_DATASETS]
-  # imaging/model_fit reads pre-committed FITS data at full resolution; the
-  # mask is built from the committed dataset shape, so PYAUTO_SMALL_DATASETS=1
-  # would yield a 15x15 array against a full-size mask.
-  - pattern: "imaging/model_fit"
-    unset: [PYAUTO_SMALL_DATASETS]
-  # imaging/visualization.py asserts subplot PNG / FITS files land on disk —
-  # PYAUTO_FAST_PLOTS skips savefig and would break those assertions. It also
-  # reads the same full-resolution dataset as imaging/model_fit, so the
-  # PYAUTO_SMALL_DATASETS cap would produce a shape mismatch with the mask.
-  - pattern: "imaging/visualization.py"
-    unset: [PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
-  # imaging/visualization_jax.py exercises the jit-cached fit_for_visualization
-  # path (registered model + fit pytree). It must run with JAX enabled —
-  # PYAUTO_DISABLE_JAX=1 would silently flip use_jax flags off and the script
-  # would no-op via the NumPy fallback.
-  - pattern: "imaging/visualization_jax"
-    unset: [PYAUTO_DISABLE_JAX, PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
-  # ellipse/visualization.py asserts subplot PNG / FITS files land on disk
-  # (same intent as imaging/visualization.py). Loads pre-committed FITS at
-  # full resolution and builds the mask from dataset.shape_native, so both
-  # PYAUTO_FAST_PLOTS and PYAUTO_SMALL_DATASETS must be unset.
-  - pattern: "ellipse/visualization.py"
-    unset: [PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
-  # ellipse/visualization_jax exercises the JAX-capable ellipse visualization
-  # path and asserts plot files land on disk.
-  - pattern: "ellipse/visualization_jax"
-    unset: [PYAUTO_DISABLE_JAX, PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
-  # ellipse/modeling_visualization_jit — live Nautilus + JAX visualization path.
-  - pattern: "ellipse/modeling_visualization_jit"
-    unset: [PYAUTO_DISABLE_JAX, PYAUTO_SMALL_DATASETS, PYAUTO_TEST_MODE, PYAUTO_FAST_PLOTS]
-  # modeling_visualization_jit tests the JIT-cached visualization path:
-  # needs JAX enabled (Part 1 asserts log_likelihood is a jax.Array), the
-  # full-resolution mask, a real Nautilus run for Part 2, and savefig active
-  # (Part 2 asserts fit.png lands on disk).
-  - pattern: "imaging/modeling_visualization_jit"
-    unset: [PYAUTO_DISABLE_JAX, PYAUTO_SMALL_DATASETS, PYAUTO_TEST_MODE, PYAUTO_FAST_PLOTS]
-  # interferometer/visualization.py asserts subplot PNG / FITS files land on
-  # disk. Loads pre-committed FITS at full resolution and uses an explicit
-  # (256, 256) shape_native mask — both PYAUTO_FAST_PLOTS and
-  # PYAUTO_SMALL_DATASETS must be unset (the 15x15 cap caps even when
-  # shape_native is explicit).
-  - pattern: "interferometer/visualization.py"
-    unset: [PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
-  # interferometer/visualization_jax exercises the jit-cached
-  # fit_for_visualization path on the interferometer side.
-  - pattern: "interferometer/visualization_jax"
-    unset: [PYAUTO_DISABLE_JAX, PYAUTO_FAST_PLOTS, PYAUTO_SMALL_DATASETS]
-  # interferometer/modeling_visualization_jit — live Nautilus + JIT path.
-  - pattern: "interferometer/modeling_visualization_jit"
-    unset: [PYAUTO_DISABLE_JAX, PYAUTO_SMALL_DATASETS, PYAUTO_TEST_MODE, PYAUTO_FAST_PLOTS]
-  # (The `quantity/visualization.py` and `quantity/visualization_jax`
-  # overrides were removed on 2026-07-23. Commit 49e53de, "chore: remove
-  # quantity scripts and config entries" (2026-05-22), deleted
-  # scripts/quantity/ but left these two behind, so they had matched no file
-  # for two months.)
+# All former overrides here unset only the four declarable vars
+# (PYAUTO_SMALL_DATASETS / PYAUTO_DISABLE_JAX / PYAUTO_FAST_PLOTS /
+# PYAUTO_TEST_MODE) with no set: clause, so each has been migrated to an
+# in-file `# ENV:` declaration on the matched script(s) — #187 Stage 2.
+overrides: []

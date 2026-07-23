@@ -4,6 +4,8 @@ Integration test: aggregator Ellipse scrape.
 Exercises EllipsesAgg, FitEllipseAgg, and MultipolesAgg
 randomly_drawn_via_pdf_gen_from and all_above_weight_gen_from.
 """
+# ENV: full_datasets
+# Asserts grid metadata that depends on full-size datasets.
 
 import os
 import shutil
