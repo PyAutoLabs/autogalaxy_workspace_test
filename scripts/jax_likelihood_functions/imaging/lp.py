@@ -11,9 +11,16 @@ autogalaxy model composed of a linear Sersic bulge. Two paths are exercised:
    registration added to ``AnalysisImaging._register_fit_imaging_pytrees`` —
    this path exercises the full ``FitImaging`` return value flattening.
 """
-# ENV: jax full_datasets
-# JAX likelihood functions test JIT compilation; need JAX enabled
-# and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
 
 import time
 from os import path

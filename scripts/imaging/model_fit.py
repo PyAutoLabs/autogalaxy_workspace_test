@@ -8,9 +8,16 @@ Exercises ``AnalysisImaging`` -> ``FitImaging`` with a Nautilus search.
 Galaxy: a single ``Sersic`` bulge — no lens / mass / source split (this is autogalaxy,
 not autolens).
 """
-# ENV: full_datasets
-# Reads pre-committed full-resolution FITS; the SMALL_DATASETS cap
-# would mismatch the committed-shape mask.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+Reads pre-committed full-resolution FITS; the SMALL_DATASETS cap would
+mismatch the committed-shape mask.
+
+ENV: full_datasets
+"""
 
 import os
 from os import path

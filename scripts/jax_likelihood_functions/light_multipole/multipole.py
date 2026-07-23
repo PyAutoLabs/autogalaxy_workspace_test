@@ -18,9 +18,16 @@ Gaussian priors on the four multipole component parameters
 those — this keeps the test self-contained until the workspace priors follow-up
 lands.
 """
-# ENV: jax full_datasets
-# JAX likelihood functions test JIT compilation; need JAX enabled
-# and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
 
 import time
 from os import path

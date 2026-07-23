@@ -13,9 +13,16 @@ Structure
 Calls ``VisualizerInterferometer.visualize`` once with a parametric MGE galaxy
 into a dedicated subfolder, asserting that ``fit.png`` is produced.
 """
-# ENV: full_datasets real_plots
-# Asserts subplot PNG / FITS land on disk (needs real plots) and
-# reads full-resolution data.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+Asserts subplot PNG / FITS land on disk (needs real plots) and reads full-
+resolution data.
+
+ENV: full_datasets real_plots
+"""
 
 import shutil
 from os import path

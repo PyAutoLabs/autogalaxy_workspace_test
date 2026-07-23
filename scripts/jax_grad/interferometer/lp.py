@@ -3,9 +3,16 @@ Tests that jax.value_and_grad can compute finite, non-NaN gradients of the log-l
 for an autogalaxy interferometer model with a parametric Sersic light profile. This tests
 the core JAX differentiability that enables gradient-based inference on visibility data.
 """
-# ENV: jax full_datasets
-# JAX gradient scripts exercise jax.value_and_grad on the full
-# likelihood path; need JAX enabled and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX gradient scripts exercise jax.value_and_grad on the full likelihood
+path; need JAX enabled and full-size datasets.
+
+ENV: jax full_datasets
+"""
 
 import numpy as np
 import jax

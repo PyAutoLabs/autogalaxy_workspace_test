@@ -16,9 +16,16 @@ Scope
   ``jax_likelihood_functions`` scripts produce.
 - ``use_jax=True`` turns on the JAX-capable analysis path.
 """
-# ENV: jax full_datasets real_plots
-# JAX-capable ellipse visualization path; needs JAX enabled, real
-# plots and full-resolution data.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX-capable ellipse visualization path; needs JAX enabled, real plots and
+full-resolution data.
+
+ENV: jax full_datasets real_plots
+"""
 
 import shutil
 import subprocess

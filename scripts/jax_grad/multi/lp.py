@@ -8,9 +8,16 @@ likelihood path.
 Uses option B — per-band ``galaxy.bulge.ell_comps_{0,1}`` priors via ``model.copy()`` +
 ``af.GaussianPrior`` on each ``AnalysisFactor``.
 """
-# ENV: jax full_datasets
-# JAX gradient scripts exercise jax.value_and_grad on the full
-# likelihood path; need JAX enabled and full-size datasets.
+
+"""
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX gradient scripts exercise jax.value_and_grad on the full likelihood
+path; need JAX enabled and full-size datasets.
+
+ENV: jax full_datasets
+"""
 
 import numpy as np
 import jax
