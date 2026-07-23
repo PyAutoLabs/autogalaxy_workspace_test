@@ -16,9 +16,7 @@ Output files (under ``dataset/interferometer/jax_test/``):
 - ``noise_map.fits`` — per-visibility noise sigma
 - ``uv_wavelengths.fits`` — the synthetic uv-coverage used by the simulator
 - ``galaxies.json`` — the exact ``Galaxies`` used, for reproducibility
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

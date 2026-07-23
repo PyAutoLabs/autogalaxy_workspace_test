@@ -11,9 +11,7 @@ Two paths are exercised:
 2. ``jax.jit(analysis.fit_from)`` round-trip, which relies on the pytree
    registration added to ``AnalysisImaging._register_fit_imaging_pytrees`` —
    this path exercises the full ``FitImaging`` return value flattening.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

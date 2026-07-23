@@ -32,9 +32,7 @@ Each scenario writes into its own subfolder under ``images/visualization/``:
 Each scenario calls ``VisualizerEllipse.visualize_before_fit`` and
 ``VisualizerEllipse.visualize`` and asserts the expected PNGs exist.
 Numpy-only — no JAX imports.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

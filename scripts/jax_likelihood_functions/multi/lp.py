@@ -19,9 +19,7 @@ are exercised:
 Uses **option B** — per-band ``galaxy.bulge.ell_comps_{0,1}`` priors via
 ``model.copy()`` + ``af.GaussianPrior`` on each ``AnalysisFactor``. All other
 parameters stay shared across the g and r bands.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

@@ -7,9 +7,7 @@ Exercises ``AnalysisImaging`` -> ``FitImaging`` with a Nautilus search.
 
 Galaxy: a single ``Sersic`` bulge — no lens / mass / source split (this is autogalaxy,
 not autolens).
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

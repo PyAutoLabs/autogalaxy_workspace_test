@@ -22,9 +22,7 @@ This script deliberately opts in with
 ``AnalysisEllipse(use_jax=True)``.
 Default ellipse model-fit scripts elsewhere in the workspace leave the flag
 at ``False`` and are therefore untouched by this change.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

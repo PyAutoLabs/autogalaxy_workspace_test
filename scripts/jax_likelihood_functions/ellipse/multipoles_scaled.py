@@ -13,9 +13,7 @@ PyAutoGalaxy#427 / #426 to slip through prompt 7's verification.
 Prints the numpy-path log-likelihood, chi-squared, noise-normalisation, and
 figure-of-merit values for a single ellipse + m=4 scaled multipole fit to the
 simulated dataset.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

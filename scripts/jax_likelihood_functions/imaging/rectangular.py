@@ -13,9 +13,7 @@ Two paths are exercised:
    ``AnalysisImaging._register_fit_imaging_pytrees`` and on
    ``AdaptImages.image_for_galaxy`` resolving fresh-Galaxy lookups via the
    path-tuple list across the JIT boundary.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

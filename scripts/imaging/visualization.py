@@ -30,9 +30,7 @@ Expected outputs are derived directly from the source code of:
   - autogalaxy/imaging/model/plotter.py       (PlotterImaging)
   - autogalaxy/analysis/plotter.py            (Plotter: galaxies, inversion)
   - autogalaxy/imaging/plot/fit_imaging_plots.py
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

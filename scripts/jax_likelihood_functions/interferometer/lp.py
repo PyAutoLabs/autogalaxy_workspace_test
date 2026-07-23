@@ -11,9 +11,7 @@ an autogalaxy model composed of a Sersic bulge. Two paths are exercised:
    registration added to
    ``AnalysisInterferometer._register_fit_interferometer_pytrees`` — this path
    exercises the full ``FitInterferometer`` return value flattening.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

@@ -15,9 +15,7 @@ Scope
 - Reuses the ``dataset/imaging/jax_test`` dataset that the
   ``jax_likelihood_functions`` scripts produce.
 - ``use_jax=True`` turns on the JAX-capable analysis path.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).

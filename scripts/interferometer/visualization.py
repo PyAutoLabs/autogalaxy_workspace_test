@@ -12,9 +12,7 @@ Structure
 ---------
 Calls ``VisualizerInterferometer.visualize`` once with a parametric MGE galaxy
 into a dedicated subfolder, asserting that ``fit.png`` is produced.
-"""
 
-"""
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
