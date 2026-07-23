@@ -17,57 +17,22 @@
 # real plots — makes the profile self-contained regardless of the caller's
 # environment.
 #
-# "overrides" then only ever `set:` a var to flip it away from this profile's
-# own default for specific scripts — never `unset:` a var that "defaults"
-# already pins, since unsetting just re-exposes the same inherited-env gap
-# `defaults` exists to close. In practice that leaves PYAUTO_DISABLE_JAX as
-# the only var any override here still needs to touch (PYAUTO_TEST_MODE="0"
-# and the full-res/real-plot defaults already satisfy every other unset the
-# smoke profile's env_vars.yaml needs).
-#
-# Pattern convention (same as no_run.yaml):
-#   - Patterns containing '/' do a substring match against the file path
-#     including extension (so patterns may end in `.py` to anchor against
-#     the script form, e.g. `imaging/visualization.py` matches only the
-#     `.py` script, not `imaging/visualization_jax.py`).
-#   - Patterns without '/' match the file stem exactly.
+# The JAX set is DERIVED, not enumerated (PyAutoHands
+# docs/env_profile_redesign.md §3): `derive_jax_markers: true` makes the
+# resolver run any script whose path segment/stem matches `jax_*` / `*_jax` /
+# `*_jit` with PYAUTO_DISABLE_JAX="0". Adding a JAX script to a `jax_*` folder
+# (or naming it `*_jax` / `*_jit`) self-registers — there is no override list
+# to keep in sync, and the validator errors on any PYAUTO_DISABLE_JAX override
+# creeping back in (the hand-enumerated list was the silent-rot failure mode).
 
 defaults:
   PYAUTO_TEST_MODE: "0"                     # real searches (each script caps its own n_like_max)
   PYAUTO_SMALL_DATASETS: "0"                # full-res grids/masks (release fidelity, not smoke)
-  PYAUTO_DISABLE_JAX: "1"                   # force use_jax=False by default; JAX-specific folders re-enable below
+  PYAUTO_DISABLE_JAX: "1"                   # force use_jax=False by default; the marker derivation re-enables JAX
   PYAUTO_FAST_PLOTS: "0"                    # real plots (release fidelity, not smoke)
   PYAUTO_SKIP_WORKSPACE_VERSION_CHECK: "1"  # TestPyPI dev version won't match the workspace pin
   JAX_ENABLE_X64: "True"                    # enable 64-bit precision in JAX
   NUMBA_CACHE_DIR: "/tmp/numba_cache"       # writable cache dir for numba
   MPLCONFIGDIR: "/tmp/matplotlib"           # writable config dir for matplotlib
 
-overrides:
-  # JAX likelihood/gradient scripts test JIT compilation — need JAX enabled
-  # (already full-res/real-plots by default above).
-  - pattern: "jax_likelihood_functions/"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  - pattern: "jax_grad/"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  # visualization_jax scripts (imaging/interferometer/ellipse/quantity) and
-  # modeling_visualization_jit scripts (imaging/interferometer/ellipse)
-  # exercise the jit-cached fit_for_visualization path and must run with JAX
-  # enabled — PYAUTO_DISABLE_JAX="1" would silently flip use_jax flags off.
-  # PYAUTO_TEST_MODE="0" (real Nautilus run) and full-res/real-plots are
-  # already this profile's defaults.
-  - pattern: "imaging/visualization_jax"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  - pattern: "ellipse/visualization_jax"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  - pattern: "ellipse/modeling_visualization_jit"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  - pattern: "imaging/modeling_visualization_jit"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  - pattern: "interferometer/visualization_jax"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  - pattern: "interferometer/modeling_visualization_jit"
-    set: { PYAUTO_DISABLE_JAX: "0" }
-  # (The `quantity/visualization_jax` override was removed on 2026-07-23.
-  # Commit 49e53de, "chore: remove quantity scripts and config entries"
-  # (2026-05-22), deleted scripts/quantity/ but left this one behind, so it
-  # had matched no file for two months.)
+derive_jax_markers: true
