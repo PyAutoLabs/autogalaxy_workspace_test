@@ -29,9 +29,6 @@ from pathlib import Path
 WORKSPACE = Path(__file__).resolve().parents[2]
 SMOKE_FILE = WORKSPACE / "smoke_tests.txt"
 ENV_VARS_FILE = WORKSPACE / "config" / "build" / "profile_smoke.yaml"
-if not ENV_VARS_FILE.exists():
-    # Legacy fallback; removed at the stage-3 cleanup (#161 step 6 / stage 3).
-    ENV_VARS_FILE = WORKSPACE / "config" / "build" / "env_vars.yaml"
 SCRIPTS_DIR = WORKSPACE / "scripts"
 
 # CI puts PyAutoHands/autohands on PYTHONPATH (PyAutoHeart's reusable
