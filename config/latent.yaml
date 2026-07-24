@@ -1,6 +1,6 @@
 # Workspace overrides for the autogalaxy latent toggles. Enables both
 # registered latents in `autogalaxy.imaging.model.latent.LATENT_FUNCTIONS`
-# so `scripts/latent/latent_nan_robustness.py` exercises the multi-column
+# so `scripts/misc/latent/latent_nan_robustness.py` exercises the multi-column
 # latent path (column 0 = total_galaxy_0_flux is the one the NaN-injection
 # guard poisons; total_galaxy_0_flux_mujy is the second column whose key the
 # pre-fix per-batch mask would mis-zip / drop).

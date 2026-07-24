@@ -1,0 +1,175 @@
+"""
+JAX Likelihood: Rectangular Adapt-Image Pixelization
+=====================================================
+
+Verify that JAX can compute the log-likelihood of an ``Imaging`` fit for an
+autogalaxy model that uses an adapt-image rectangular pixelization
+(``RectangularAdaptImage`` + ``Adapt`` regularization).
+
+Two paths are exercised:
+
+1. ``fitness._vmap`` batch evaluation.
+2. ``jax.jit(analysis.fit_from)`` scalar round-trip — relies on
+   ``AnalysisImaging._register_fit_imaging_pytrees`` and on
+   ``AdaptImages.image_for_galaxy`` resolving fresh-Galaxy lookups via the
+   path-tuple list across the JIT boundary.
+
+__Env__
+
+Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
+JAX likelihood functions test JIT compilation; need JAX enabled and full-
+size datasets.
+
+ENV: jax full_datasets
+"""
+
+import time
+from os import path
+
+import jax
+import jax.numpy as jnp
+import numpy as np
+
+import autofit as af
+import autogalaxy as ag
+
+
+dataset_path = path.join("dataset", "imaging", "jax_test")
+
+if not path.exists(path.join(dataset_path, "data.fits")):
+    import subprocess
+    import sys
+
+    subprocess.run(
+        [sys.executable, "scripts/imaging/jax_likelihood/simulator.py"],
+        check=True,
+    )
+
+dataset = ag.Imaging.from_fits(
+    data_path=path.join(dataset_path, "data.fits"),
+    psf_path=path.join(dataset_path, "psf.fits"),
+    noise_map_path=path.join(dataset_path, "noise_map.fits"),
+    pixel_scales=0.2,
+)
+
+mask = ag.Mask2D.circular(
+    shape_native=dataset.shape_native,
+    pixel_scales=dataset.pixel_scales,
+    radius=3.0,
+)
+
+dataset = dataset.apply_mask(mask=mask)
+dataset = dataset.apply_over_sampling(
+    over_sample_size_lp=4,
+    over_sample_size_pixelization=4,
+)
+
+"""
+__Adapt Images__
+
+The galaxy is named ``galaxy`` in the model, so the path tuple is
+``('galaxies', 'galaxy')``. ``dataset.data`` is used as a stand-in for the
+"previous-fit" galaxy image — sufficient to exercise the adapt-image code paths.
+"""
+galaxy_name_image_dict = {
+    "('galaxies', 'galaxy')": dataset.data,
+}
+
+adapt_images = ag.AdaptImages(galaxy_name_image_dict=galaxy_name_image_dict)
+
+"""
+__Model__
+
+Single galaxy with an adapt-image rectangular pixelization. The mesh shape is
+fixed (28 x 28) per the JAX static-shape requirement.
+"""
+mesh = ag.mesh.RectangularAdaptImage(shape=(28, 28), weight_power=1.0)
+regularization = ag.reg.Adapt()
+pixelization = ag.Pixelization(mesh=mesh, regularization=regularization)
+
+galaxy = af.Model(ag.Galaxy, redshift=0.5, pixelization=pixelization)
+
+model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
+
+print(model.info)
+
+analysis = ag.AnalysisImaging(
+    dataset=dataset,
+    adapt_images=adapt_images,
+    settings=ag.Settings(
+        use_border_relocator=True,
+        use_positive_only_solver=True,
+        use_mixed_precision=True,
+    ),
+)
+
+"""
+__vmap Path__
+"""
+from autofit.non_linear.fitness import Fitness
+
+batch_size = 3
+
+fitness = Fitness(
+    model=model,
+    analysis=analysis,
+    fom_is_log_likelihood=True,
+    resample_figure_of_merit=-1.0e99,
+)
+
+parameters = np.zeros((batch_size, model.total_free_parameters))
+for i in range(batch_size):
+    parameters[i, :] = model.physical_values_from_prior_medians
+parameters = jnp.array(parameters)
+
+start = time.time()
+result = fitness._vmap(parameters)
+print(result)
+print("JAX Time To VMAP + JIT Function:", time.time() - start)
+
+start = time.time()
+result = fitness._vmap(parameters)
+print("JAX Time Taken using VMAP:", time.time() - start)
+print("JAX Time Taken per Likelihood:", (time.time() - start) / batch_size)
+
+"""
+__Path A: jit-wrap ``analysis.fit_from``__
+"""
+
+
+instance = model.instance_from_prior_medians()
+
+analysis_np = ag.AnalysisImaging(
+    dataset=dataset,
+    adapt_images=adapt_images,
+    settings=ag.Settings(
+        use_border_relocator=True,
+        use_positive_only_solver=True,
+        use_mixed_precision=True,
+    ),
+    use_jax=False,
+)
+fit_np = analysis_np.fit_from(instance=instance)
+print("NumPy fit.log_likelihood:", float(fit_np.log_likelihood))
+
+analysis_jit = ag.AnalysisImaging(
+    dataset=dataset,
+    adapt_images=adapt_images,
+    settings=ag.Settings(
+        use_border_relocator=True,
+        use_positive_only_solver=True,
+        use_mixed_precision=True,
+    ),
+    use_jax=True,
+)
+fit_jit_fn = jax.jit(analysis_jit.fit_from)
+fit = fit_jit_fn(instance)
+
+print("JIT fit.log_likelihood:", fit.log_likelihood)
+assert isinstance(
+    fit.log_likelihood, jnp.ndarray
+), f"expected jax.Array, got {type(fit.log_likelihood)}"
+np.testing.assert_allclose(
+    float(fit.log_likelihood), float(fit_np.log_likelihood), rtol=2e-2
+)
+print("PASS: jit(fit_from) round-trip matches NumPy scalar.")

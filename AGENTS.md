@@ -10,13 +10,13 @@ Dependencies: `autogalaxy`, `autofit`, `autoarray`, `numba`.
 
 ```
 scripts/                     Integration-test scripts run on the build server
-  imaging/ interferometer/   CCD imaging / interferometer model-fit tests
-  ellipse/ quantity/         Ellipse-fitting and derived-quantity tests
-  aggregator/                Results database aggregator tests (pytest-based)
-  model_composition/         Model-composition tests
-  jax_likelihood_functions/  JAX batched-likelihood tests
-  jax_grad/ jax_assertions/  JAX gradient + assertion tests
-  latent/                    Latent-variable tests
+  imaging/ interferometer/   CCD imaging / interferometer tests; each dataset folder
+  ellipse/ multi/            holds visualization/, jax_grad/ and jax_likelihood/ subfolders
+  misc/                      Dataset-agnostic tests:
+    aggregator/              Results database aggregator tests (pytest-based)
+    model_composition/       Model-composition tests
+    jax_assertions/          JAX assertion tests
+    latent/                  Latent-variable tests
 failed/                      One log per failing script
 config/ output/              YAML config and runtime fit results
 ```
@@ -28,7 +28,7 @@ aggregator tests are pytest-based and run from their directory:
 
 ```bash
 python scripts/imaging/model_fit.py
-NUMBA_CACHE_DIR=/tmp/numba_cache MPLCONFIGDIR=/tmp/matplotlib python -m pytest scripts/aggregator -v
+NUMBA_CACHE_DIR=/tmp/numba_cache MPLCONFIGDIR=/tmp/matplotlib python -m pytest scripts/misc/aggregator -v
 ```
 
 ## Testing
@@ -57,11 +57,11 @@ NUMBA_CACHE_DIR=/tmp/numba_cache MPLCONFIGDIR=/tmp/matplotlib python scripts/ima
 
 ## Aggregator & JAX Testing
 
-- **Aggregator** (`scripts/aggregator/`) — `MockSearch` + `MockSamples` build mock model-fit
+- **Aggregator** (`scripts/misc/aggregator/`) — `MockSearch` + `MockSamples` build mock model-fit
   results, scrape them into an SQLite database, then exercise each aggregator class (`GalaxiesAgg`,
   `FitImagingAgg`, `ImagingAgg`, `InterferometerAgg`, `EllipsesAgg`, `FitEllipseAgg`,
   `MultipolesAgg`, …) via its generator methods.
-- **JAX** (`jax_likelihood_functions/`, `jax_grad/`, `jax_assertions/`) — exercises the `xp=jnp`
+- **JAX** (`<dataset>/jax_likelihood/`, `<dataset>/jax_grad/`, `misc/jax_assertions/`) — exercises the `xp=jnp`
   path that library unit tests (NumPy-only) never touch, via `fitness._vmap`. See the PyAutoArray
   deep dive `../PyAutoArray/docs/agents/jax_and_decorators.md` for the boundary patterns.
 
