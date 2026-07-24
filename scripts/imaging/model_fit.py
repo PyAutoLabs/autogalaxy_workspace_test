@@ -28,7 +28,7 @@ import autogalaxy.plot as aplt
 """
 __Dataset__
 
-Reuse the ``jax_test`` dataset already used by ``scripts/jax_likelihood_functions/imaging``.
+Reuse the ``jax_test`` dataset already used by ``scripts/imaging/jax_likelihood``.
 """
 dataset_path = path.join("dataset", "imaging", "jax_test")
 
@@ -37,7 +37,7 @@ if not path.exists(path.join(dataset_path, "data.fits")):
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/jax_likelihood_functions/imaging/simulator.py"],
+        [sys.executable, "scripts/imaging/jax_likelihood/simulator.py"],
         check=True,
     )
 
