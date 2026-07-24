@@ -7,14 +7,6 @@ Exercises ``AnalysisImaging`` -> ``FitImaging`` with a Nautilus search.
 
 Galaxy: a single ``Sersic`` bulge — no lens / mass / source split (this is autogalaxy,
 not autolens).
-
-__Env__
-
-Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
-Reads pre-committed full-resolution FITS; the SMALL_DATASETS cap would
-mismatch the committed-shape mask.
-
-ENV: full_datasets
 """
 
 import os
@@ -32,7 +24,7 @@ Reuse the ``jax_test`` dataset already used by ``scripts/imaging/jax_likelihood`
 """
 dataset_path = path.join("dataset", "imaging", "jax_test")
 
-if not path.exists(path.join(dataset_path, "data.fits")):
+if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 
