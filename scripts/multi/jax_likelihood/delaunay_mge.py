@@ -50,7 +50,7 @@ mask_radius = 3.0
 
 dataset_path = path.join("dataset", "multi", "jax_test")
 
-if not path.exists(path.join(dataset_path, "g_data.fits")):
+if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 

@@ -35,7 +35,7 @@ import autogalaxy as ag
 
 dataset_path = path.join("dataset", "imaging", "jax_test")
 
-if not path.exists(path.join(dataset_path, "data.fits")):
+if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 

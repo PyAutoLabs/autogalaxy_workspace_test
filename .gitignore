@@ -6,6 +6,13 @@ output/
 *.log
 .pytest_cache/
 failed/
+# Simulator-regenerable datasets are provisioned on demand by the consuming
+# scripts' `should_simulate()` bootstrap (see any scripts/*/*/simulator.py
+# consumer) — they must NOT be committed. Everything under dataset/ is ignored.
+# This workspace has no real/external committed data (the interferometer
+# simulator generates its uv-coverage inline), so there is no `!dataset/...`
+# allowlist, unlike autolens_workspace_test; the dataset-allowlist guard
+# (PyAutoHands check_dataset_allowlist.py) treats a bare `dataset/` as Group B.
 dataset/
 
 # Generated artifacts — never check in
