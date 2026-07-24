@@ -49,8 +49,8 @@ from types import SimpleNamespace
 from autogalaxy import conf
 
 conf.instance.push(
-    new_path=path.join(path.dirname(path.realpath(__file__)), "config"),
-    output_path=path.join(path.dirname(path.realpath(__file__)), "images"),
+    new_path=path.join(path.dirname(path.realpath(__file__)), "..", "config"),
+    output_path=path.join(path.dirname(path.realpath(__file__)), "..", "images"),
 )
 
 import numpy as np
@@ -251,8 +251,8 @@ Override the all-true config with a minimal one that only enables:
 All other toggles are explicitly set to false so no extra files are written.
 """
 conf.instance.push(
-    new_path=path.join(path.dirname(path.realpath(__file__)), "config_source"),
-    output_path=path.join(path.dirname(path.realpath(__file__)), "images"),
+    new_path=path.join(path.dirname(path.realpath(__file__)), "..", "config_source"),
+    output_path=path.join(path.dirname(path.realpath(__file__)), "..", "images"),
 )
 
 
