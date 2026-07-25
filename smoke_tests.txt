@@ -2,7 +2,9 @@ misc/aggregator/galaxies.py
 misc/aggregator/fit_imaging.py
 misc/aggregator/fit_interferometer.py
 misc/aggregator/ellipse.py
-misc/model_composition/multi_galaxy_mge.py
+multi_galaxy/composition_mge.py
+multi_galaxy/model_fit.py
+cluster/model_fit.py
 imaging/jax_likelihood/lp.py
 imaging/jax_likelihood/mge.py
 imaging/jax_likelihood/mge_group.py
