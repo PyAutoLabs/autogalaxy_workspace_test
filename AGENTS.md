@@ -12,9 +12,10 @@ Dependencies: `autogalaxy`, `autofit`, `autoarray`, `numba`.
 scripts/                     Integration-test scripts run on the build server
   imaging/ interferometer/   CCD imaging / interferometer tests; each dataset folder
   ellipse/ multi/            holds visualization/, jax_grad/ and jax_likelihood/ subfolders
+  multi_galaxy/              Multi-galaxy regime tests (blended-pair model_fit + composition)
+  cluster/                   Cluster regime tests (BCG + catalogue member tier model_fit)
   misc/                      Dataset-agnostic tests:
     aggregator/              Results database aggregator tests (pytest-based)
-    model_composition/       Model-composition tests
     jax_assertions/          JAX assertion tests
     latent/                  Latent-variable tests
 failed/                      One log per failing script
