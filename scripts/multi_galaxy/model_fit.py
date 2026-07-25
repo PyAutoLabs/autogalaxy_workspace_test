@@ -10,7 +10,6 @@ Structural assertions lock in the regime: independent per-galaxy light models (n
 the two galaxies), composed with the list-based ``galaxy_0`` / ``galaxy_1`` API.
 """
 
-import numpy as np
 from os import path
 
 import autofit as af
