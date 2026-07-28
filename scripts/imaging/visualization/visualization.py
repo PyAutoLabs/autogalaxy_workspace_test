@@ -158,7 +158,6 @@ dataset only; the galaxy type is determined by the instance passed to visualize.
 analysis = ag.AnalysisImaging(
     dataset=dataset,
     adapt_images=adapt_images,
-    use_jax=True,
     title_prefix="TEST",
 )
 
@@ -352,7 +351,10 @@ for source_name, model, has_inversion in source_runs:
         print(f"  {source_name}/inversion_0_0.png OK")
 
         # __Likelihood Sanity__ — only fires on the pixelization runs.
-        _assert_likelihood_sanity(f"JAX/{source_name}", analysis, model)
+        # No "JAX/" prefix: this script is the numpy visualization variant (the
+        # JAX ones are `visualization_jax.py` / `modeling_visualization_jit.py`),
+        # and both validation profiles resolve PYAUTO_DISABLE_JAX=1 here.
+        _assert_likelihood_sanity(source_name, analysis, model)
 
 
 """
