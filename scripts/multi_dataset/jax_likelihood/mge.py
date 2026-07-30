@@ -1,10 +1,10 @@
 """
-JAX Likelihood: Parametric Light Profile (Multi-Wavelength)
-============================================================
+JAX Likelihood: MGE Basis Light Profile (Multi-Wavelength)
+==========================================================
 
 Verify that JAX can compute the log-likelihood of a multi-wavelength
-``Imaging`` fit for an autogalaxy model composed of a Sersic bulge. Two paths
-are exercised:
+``Imaging`` fit for an autogalaxy model composed of an MGE linear basis.
+Two paths are exercised:
 
 1. ``fitness._vmap`` batch evaluation over a ``af.FactorGraphModel`` that
    combines per-band ``AnalysisImaging`` factors (tests ``jax.vmap`` +
@@ -16,7 +16,7 @@ are exercised:
    child factor's log-likelihood), so this is the multi-dataset analogue of
    Path A from the single-dataset scripts.
 
-Uses **option B** — per-band ``galaxy.bulge.ell_comps_{0,1}`` priors via
+Uses **option B** — per-band ``galaxy.bulge`` MGE ``ell_comps`` priors via
 ``model.copy()`` + ``af.GaussianPrior`` on each ``AnalysisFactor``. All other
 parameters stay shared across the g and r bands.
 
@@ -43,14 +43,14 @@ waveband_list = ["g", "r"]
 pixel_scales = 0.1
 mask_radius = 3.0
 
-dataset_path = path.join("dataset", "multi", "jax_test")
+dataset_path = path.join("dataset", "multi_dataset", "jax_test")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/multi/jax_likelihood/simulator.py"],
+        [sys.executable, "scripts/multi_dataset/jax_likelihood/simulator.py"],
         check=True,
     )
 
@@ -83,9 +83,13 @@ dataset_list = [
 """
 __Model__
 
-Single galaxy with a Sersic bulge — no lens/source split, no mass profile.
+Single galaxy with an MGE linear basis light profile — no lens/source split,
+no mass profile.
 """
-bulge = af.Model(ag.lp.Sersic)
+bulge = ag.model_util.mge_model_from(
+    mask_radius=mask_radius, total_gaussians=20, centre_prior_is_uniform=True
+)
+
 galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
 
@@ -94,18 +98,19 @@ print(model.info)
 """
 __Per-band models (option B)__
 
-Each band gets its own ``model.copy()`` with independent ``galaxy.bulge.ell_comps``
-priors to capture chromatic shape differences. Everything else stays shared.
+Each band gets its own ``model.copy()`` with independent ``galaxy.bulge`` MGE
+``ell_comps`` priors to capture chromatic shape differences. All gaussians
+within the Basis share one ell_comps prior pair per basis; we re-tie them to
+a fresh pair per factor so each band gets its own shape freedom.
 """
 model_per_band_list = []
 for _ in waveband_list:
     model_analysis = model.copy()
-    model_analysis.galaxies.galaxy.bulge.ell_comps.ell_comps_0 = af.GaussianPrior(
-        mean=0.0, sigma=0.5
-    )
-    model_analysis.galaxies.galaxy.bulge.ell_comps.ell_comps_1 = af.GaussianPrior(
-        mean=0.0, sigma=0.5
-    )
+    ec_0 = af.GaussianPrior(mean=0.0, sigma=0.5)
+    ec_1 = af.GaussianPrior(mean=0.0, sigma=0.5)
+    for gaussian in model_analysis.galaxies.galaxy.bulge.profile_list:
+        gaussian.ell_comps.ell_comps_0 = ec_0
+        gaussian.ell_comps.ell_comps_1 = ec_1
     model_per_band_list.append(model_analysis)
 
 """

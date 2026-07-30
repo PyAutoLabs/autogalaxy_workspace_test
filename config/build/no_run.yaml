@@ -17,7 +17,7 @@
 #   banner. Investigate the failure, fix the underlying bug, and remove
 #   the NEEDS_FIX marker.
 
-- multi/jax_likelihood/delaunay_mge # SLOW 2026-07-14 - real-search JAX Delaunay-MGE multi-band likelihood is borderline against the 1800s mode=release cap (its autolens_workspace_test sibling times out); skipped to keep release-validation deterministic. Speedup tracked by the Profiling Agent (PyAutoHeart#72). Not a bug.
+- multi_dataset/jax_likelihood/delaunay_mge # SLOW 2026-07-14 - real-search JAX Delaunay-MGE multi-band likelihood is borderline against the 1800s mode=release cap (its autolens_workspace_test sibling times out); skipped to keep release-validation deterministic. Speedup tracked by the Profiling Agent (PyAutoHeart#72). Not a bug.
 # Real-search JAX likelihood/gradient scripts that flake around the mode=release
 # per-script timeout cap. SLOW-skipped to keep mode=release deterministic; reviewed
 # via hygiene over time. Speedups are the Profiling Agent's job. Not bugs.
@@ -29,7 +29,7 @@
 - interferometer/jax_likelihood/rectangular_mge.py # SLOW 2026-07-14 - real-search JAX interferometer rectangular-MGE likelihood; flakes at the 1800s cap (PyAutoHeart#74)
 - imaging/jax_likelihood/delaunay_mge.py # SLOW 2026-07-14 - real-search JAX imaging Delaunay-MGE likelihood; flakes at the 1800s cap (PyAutoHeart#74)
 - interferometer/jax_grad/mge.py # SLOW 2026-07-14 - finite-difference JAX interferometer MGE gradient; flakes at the 1800s cap (PyAutoHeart#74)
-- multi/jax_grad/mge.py # SLOW 2026-07-14 - finite-difference JAX multi-band MGE gradient; flakes at the 1800s cap (PyAutoHeart#74)
+- multi_dataset/jax_grad/mge.py # SLOW 2026-07-14 - finite-difference JAX multi-band MGE gradient; flakes at the 1800s cap (PyAutoHeart#74)
 
 # BOOTSTRAP-TARGET simulators (NOT to-do markers — correct as-is). These scripts
 # write dataset/ fixtures that are no longer committed (git rm'd, gitignored); the
@@ -40,4 +40,4 @@
 - imaging/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/imaging/jax_test (imaging consumers + ellipse/visualization)
 - interferometer/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/interferometer/jax_test (interferometer consumers)
 - ellipse/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/ellipse/jax_test (ellipse/jax_likelihood consumers)
-- multi/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/multi/jax_test (multi consumers)
+- multi_dataset/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/multi_dataset/jax_test (multi consumers)

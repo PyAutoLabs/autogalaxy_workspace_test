@@ -1,12 +1,12 @@
 """
 Tests that jax.value_and_grad can compute finite, non-NaN gradients of the log-likelihood
-for an autogalaxy multi-wavelength model with a parametric Sersic light profile. The
-gradient is taken over the joint parameter vector spanning both g and r bands via an
-af.FactorGraphModel. This tests the core JAX differentiability of the multi-dataset
-likelihood path.
+for an autogalaxy multi-wavelength model with a Multi-Gaussian Expansion (MGE) linear
+basis light profile. The gradient is taken over the joint parameter vector spanning both
+g and r bands via an af.FactorGraphModel. This tests the core JAX differentiability of
+the multi-dataset likelihood path.
 
-Uses option B — per-band ``galaxy.bulge.ell_comps_{0,1}`` priors via ``model.copy()`` +
-``af.GaussianPrior`` on each ``AnalysisFactor``.
+Uses option B — per-band MGE ``ell_comps_{0,1}`` priors via ``model.copy()`` + a fresh
+``af.GaussianPrior`` pair re-tied across every gaussian within each basis.
 
 __Env__
 
@@ -29,7 +29,7 @@ waveband_list = ["g", "r"]
 pixel_scales = 0.1
 mask_radius = 3.0
 
-dataset_path = path.join("dataset", "multi", "jax_test")
+dataset_path = path.join("dataset", "multi_dataset", "jax_test")
 
 """
 __Dataset Auto-Simulation__
@@ -42,7 +42,7 @@ if ag.util.dataset.should_simulate(dataset_path):
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/multi/jax_likelihood/simulator.py"],
+        [sys.executable, "scripts/multi_dataset/jax_likelihood/simulator.py"],
         check=True,
     )
 
@@ -72,23 +72,25 @@ dataset_list = [
     dataset.apply_over_sampling(over_sample_size_lp=1) for dataset in dataset_list
 ]
 
-# Single galaxy with a Sersic bulge — no lens/source split, no mass profile.
+# Single galaxy with an MGE linear basis light profile — no lens/source split, no mass profile.
 
-bulge = af.Model(ag.lp.Sersic)
+bulge = ag.model_util.mge_model_from(
+    mask_radius=mask_radius, total_gaussians=20, centre_prior_is_uniform=True
+)
 galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
 
-# Per-band models (option B): independent ell_comps priors per band, all other params shared.
+# Per-band models (option B): re-tie the MGE basis ell_comps to a fresh prior pair
+# per band so each band gets its own shape freedom while sharing centres and intensities.
 
 model_per_band_list = []
 for _ in waveband_list:
     model_analysis = model.copy()
-    model_analysis.galaxies.galaxy.bulge.ell_comps.ell_comps_0 = af.GaussianPrior(
-        mean=0.0, sigma=0.5
-    )
-    model_analysis.galaxies.galaxy.bulge.ell_comps.ell_comps_1 = af.GaussianPrior(
-        mean=0.0, sigma=0.5
-    )
+    ec_0 = af.GaussianPrior(mean=0.0, sigma=0.5)
+    ec_1 = af.GaussianPrior(mean=0.0, sigma=0.5)
+    for gaussian in model_analysis.galaxies.galaxy.bulge.profile_list:
+        gaussian.ell_comps.ell_comps_0 = ec_0
+        gaussian.ell_comps.ell_comps_1 = ec_1
     model_per_band_list.append(model_analysis)
 
 analysis_list = [ag.AnalysisImaging(dataset=dataset) for dataset in dataset_list]
@@ -138,4 +140,4 @@ assert np.all(
 ), f"Gradient contains non-finite values: {np.array(grad)}"
 assert not np.all(np.array(grad) == 0.0), "Gradient is all zeros"
 
-print("jax_grad/multi/lp.py JAX gradient checks passed.")
+print("multi_dataset/jax_grad/mge.py JAX gradient checks passed.")
