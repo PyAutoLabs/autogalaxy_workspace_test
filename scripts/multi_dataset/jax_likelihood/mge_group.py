@@ -39,14 +39,14 @@ waveband_list = ["g", "r"]
 pixel_scales = 0.1
 mask_radius = 3.0
 
-dataset_path = path.join("dataset", "multi", "jax_test")
+dataset_path = path.join("dataset", "multi_dataset", "jax_test")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/multi/jax_likelihood/simulator.py"],
+        [sys.executable, "scripts/multi_dataset/jax_likelihood/simulator.py"],
         check=True,
     )
 

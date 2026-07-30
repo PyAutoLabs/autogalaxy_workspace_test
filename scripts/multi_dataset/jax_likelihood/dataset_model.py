@@ -19,7 +19,7 @@ so it should pick up ``DatasetModel`` automatically. The mixed registration
 as a ``TuplePrior``) is a subtle stress on the classifier's ``setdefault``
 behaviour — this script is the regression marker for that path.
 
-Path layout follows ``multi/lp.py``: vmap evaluation through
+Path layout follows ``multi_dataset/lp.py``: vmap evaluation through
 ``fitness._vmap`` and then a separate ``jax.jit`` wrap around
 ``instance_from_vector → log_likelihood_function``.
 
@@ -46,14 +46,14 @@ waveband_list = ["g", "r"]
 pixel_scales = 0.1
 mask_radius = 3.0
 
-dataset_path = path.join("dataset", "multi", "jax_test")
+dataset_path = path.join("dataset", "multi_dataset", "jax_test")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/multi/jax_likelihood/simulator.py"],
+        [sys.executable, "scripts/multi_dataset/jax_likelihood/simulator.py"],
         check=True,
     )
 
@@ -106,7 +106,7 @@ __Per-band models__
 
 The first band keeps the ``DatasetModel`` defaults (fixed ``grid_offset =
 (0.0, 0.0)``). Every later band gets a free 2D offset prior. The galaxy's
-``ell_comps`` are also per-band as in ``multi/lp.py`` to keep this script
+``ell_comps`` are also per-band as in ``multi_dataset/lp.py`` to keep this script
 structurally parallel.
 """
 model_per_band_list = []

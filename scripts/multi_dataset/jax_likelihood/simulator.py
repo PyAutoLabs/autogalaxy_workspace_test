@@ -3,7 +3,7 @@ Simulator: JAX Multi-Wavelength Test Dataset
 ============================================
 
 Simulates two-band (g and r) ``Imaging`` datasets consumed by every script in
-``scripts/multi/jax_likelihood/``.
+``scripts/multi_dataset/jax_likelihood/``.
 
 A single galaxy with a Sersic bulge + Exponential disk is observed in two
 wavebands. Each band has a different bulge intensity to give chromatic
@@ -11,7 +11,7 @@ variation, and a distinct noise seed. No lens / mass / source plane — this
 is single-plane autogalaxy data designed to exercise the JAX likelihood path
 through ``af.FactorGraphModel`` over multiple datasets.
 
-Output files (under ``dataset/multi/jax_test/``):
+Output files (under ``dataset/multi_dataset/jax_test/``):
 
 - ``{g,r}_data.fits`` — simulated noisy images
 - ``{g,r}_psf.fits`` — Gaussian PSF kernels
@@ -33,7 +33,7 @@ from pathlib import Path
 import autogalaxy as ag
 
 
-dataset_path = Path("dataset", "multi", "jax_test")
+dataset_path = Path("dataset", "multi_dataset", "jax_test")
 dataset_path.mkdir(parents=True, exist_ok=True)
 
 grid = ag.Grid2D.uniform(shape_native=(150, 150), pixel_scales=0.1)

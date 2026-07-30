@@ -1,11 +1,12 @@
 """
-JAX Likelihood: Rectangular Adapt-Image Pixelization + MGE Bulge (Multi-Wavelength)
-=====================================================================================
+JAX Likelihood: Delaunay + MGE Bulge (Multi-Wavelength)
+========================================================
 
 Verify that JAX can compute the log-likelihood of a multi-wavelength
 ``Imaging`` fit for an autogalaxy model with two galaxies:
   - galaxy_0: MGE bulge (provides linear light profiles)
-  - galaxy_1: adapt-image rectangular pixelization + Constant regularization
+  - galaxy_1: Delaunay pixelization with MaternAdaptKernel regularization
+               seeded by a Hilbert image-mesh
 
 Two paths are exercised:
 
@@ -20,6 +21,9 @@ The MGE bulge parameters stay shared across bands.
 
 Path A asserts JIT round-trip parity with the vmap result (pixelized path
 differs between use_jax=True and use_jax=False).
+
+Note: If JAX 0.7's ``pytype_aval_mappings`` removal breaks this script,
+mark JAX_07_BROKEN and mirror imaging's commented-out treatment.
 
 __Env__
 
@@ -44,14 +48,14 @@ waveband_list = ["g", "r"]
 pixel_scales = 0.1
 mask_radius = 3.0
 
-dataset_path = path.join("dataset", "multi", "jax_test")
+dataset_path = path.join("dataset", "multi_dataset", "jax_test")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/multi/jax_likelihood/simulator.py"],
+        [sys.executable, "scripts/multi_dataset/jax_likelihood/simulator.py"],
         check=True,
     )
 
@@ -83,41 +87,61 @@ dataset_list = [
 ]
 
 """
-__Mesh & Adapt Images (per band)__
+__Image-Plane Mesh & Adapt Images (per band)__
 
-The model has two galaxies named ``galaxy_0`` (MGE bulge) and ``galaxy_1``
-(pixelization). Both are included in the dict to keep the path list aligned
-with all galaxies in the analysis.
+JAX requires static-shaped arrays. ``pixels`` and ``edge_pixels_total`` fix the
+total source-pixel count up front. The image-plane mesh grid for ``galaxy_1``
+is built in NumPy via the Hilbert image-mesh.
 """
-mesh_pixels_yx = 28
-mesh_shape = (mesh_pixels_yx, mesh_pixels_yx)
+pixels = 500
+edge_pixels_total = 30
 
-adapt_images_list = [
-    ag.AdaptImages(
-        galaxy_name_image_dict={
-            "('galaxies', 'galaxy_0')": dataset.data,
-            "('galaxies', 'galaxy_1')": dataset.data,
-        }
+adapt_images_list = []
+for dataset, mask in zip(dataset_list, mask_list):
+    galaxy_name_image_dict = {
+        "('galaxies', 'galaxy_0')": dataset.data,
+        "('galaxies', 'galaxy_1')": dataset.data,
+    }
+    image_mesh = ag.image_mesh.Hilbert(
+        pixels=pixels, weight_power=3.5, weight_floor=0.01
     )
-    for dataset in dataset_list
-]
+    image_plane_mesh_grid = image_mesh.image_plane_mesh_grid_from(
+        mask=dataset.mask,
+        adapt_data=galaxy_name_image_dict["('galaxies', 'galaxy_1')"],
+    )
+    image_plane_mesh_grid = ag.image_mesh.append_with_circle_edge_points(
+        image_plane_mesh_grid=image_plane_mesh_grid,
+        centre=mask.mask_centre,
+        radius=mask_radius + mask.pixel_scale / 2.0,
+        n_points=edge_pixels_total,
+    )
+    adapt_images_list.append(
+        ag.AdaptImages(
+            galaxy_name_image_dict=galaxy_name_image_dict,
+            galaxy_name_image_plane_mesh_grid_dict={
+                "('galaxies', 'galaxy_1')": image_plane_mesh_grid
+            },
+        )
+    )
 
 """
 __Model__
 
-galaxy_0: MGE bulge — provides linear light profiles.
-galaxy_1: rectangular adapt-image pixelization.
+galaxy_0: MGE bulge.
+galaxy_1: Delaunay pixelization with MaternAdaptKernel regularization.
 """
 bulge = ag.model_util.mge_model_from(
-    mask_radius=mask_radius, total_gaussians=10, centre_prior_is_uniform=True
+    mask_radius=mask_radius,
+    total_gaussians=10,
+    centre_prior_is_uniform=True,
 )
 
 galaxy_0 = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 
 pixelization = af.Model(
     ag.Pixelization,
-    mesh=ag.mesh.RectangularAdaptImage(shape=mesh_shape, weight_power=1.0),
-    regularization=ag.reg.Adapt,
+    mesh=ag.mesh.Delaunay(pixels=pixels, zeroed_pixels=edge_pixels_total),
+    regularization=ag.reg.MaternAdaptKernel,
 )
 
 galaxy_1 = af.Model(ag.Galaxy, redshift=0.5, pixelization=pixelization)
@@ -129,8 +153,8 @@ print(model.info)
 """
 __Per-band models (option B)__
 
-Each band gets its own ``model.copy()`` with an independent prior on
-``galaxy_1.pixelization.regularization.inner_coefficient``.
+Each band gets its own ``model.copy()`` with an independent prior on the
+regularization ``inner_coefficient``.
 """
 model_per_band_list = []
 for _ in waveband_list:
@@ -203,9 +227,8 @@ parameter-vector entry point that mirrors what ``fitness._vmap`` does
 internally: ``instance_from_vector`` → ``log_likelihood_function``.
 
 The adapt-regularization linear solve has ~1% NumPy/JAX float-ordering
-drift — same as the single-dataset autogalaxy ``imaging/rectangular_mge.py``
-and ``interferometer/rectangular_mge.py``, so the rtol=1e-2 convention
-applies.
+drift — same as the single-dataset autogalaxy ``imaging/delaunay_mge.py``
+and ``interferometer/delaunay_mge.py``, so the rtol=1e-2 convention applies.
 """
 
 

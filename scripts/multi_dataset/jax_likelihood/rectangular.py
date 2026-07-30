@@ -1,24 +1,27 @@
 """
-JAX Likelihood: MGE Basis Light Profile (Multi-Wavelength)
-==========================================================
+JAX Likelihood: Rectangular Adapt-Image Pixelization (Multi-Wavelength)
+========================================================================
 
 Verify that JAX can compute the log-likelihood of a multi-wavelength
-``Imaging`` fit for an autogalaxy model composed of an MGE linear basis.
+``Imaging`` fit for an autogalaxy model using an adapt-image rectangular
+pixelization (``RectangularAdaptImage`` + ``Adapt`` regularization).
 Two paths are exercised:
 
 1. ``fitness._vmap`` batch evaluation over a ``af.FactorGraphModel`` that
-   combines per-band ``AnalysisImaging`` factors (tests ``jax.vmap`` +
-   ``jax.jit`` on the autofit ``Fitness`` wrapper).
-2. ``jax.jit`` over a parameter-vector entry point that mirrors what
-   ``fitness._vmap`` does internally:
+   combines per-band ``AnalysisImaging`` factors.
+2. ``jax.jit`` over a parameter-vector entry point:
    ``instance_from_vector`` → ``factor_graph.log_likelihood_function``.
-   ``FactorGraphModel`` does not expose a ``fit_from`` method (it sums each
-   child factor's log-likelihood), so this is the multi-dataset analogue of
-   Path A from the single-dataset scripts.
 
-Uses **option B** — per-band ``galaxy.bulge`` MGE ``ell_comps`` priors via
-``model.copy()`` + ``af.GaussianPrior`` on each ``AnalysisFactor``. All other
-parameters stay shared across the g and r bands.
+Uses **option B** — per-band ``galaxy.pixelization.regularization.inner_coefficient``
+priors via ``model.copy()`` + ``af.GaussianPrior`` on each ``AnalysisFactor``.
+This is the pixelized analogue of "per-band shape": each band gets its own
+regularization strength.
+
+Path A asserts JIT round-trip parity with the vmap result. For pixelized
+models, ``analysis.log_likelihood_function`` under ``use_jax=True`` takes a
+different numerical path than under ``use_jax=False`` (the JAX path matches
+``fit.log_likelihood`` only when routed through ``fit_from``, which
+``FactorGraphModel`` does not expose).
 
 __Env__
 
@@ -43,14 +46,14 @@ waveband_list = ["g", "r"]
 pixel_scales = 0.1
 mask_radius = 3.0
 
-dataset_path = path.join("dataset", "multi", "jax_test")
+dataset_path = path.join("dataset", "multi_dataset", "jax_test")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
     import sys
 
     subprocess.run(
-        [sys.executable, "scripts/multi/jax_likelihood/simulator.py"],
+        [sys.executable, "scripts/multi_dataset/jax_likelihood/simulator.py"],
         check=True,
     )
 
@@ -77,20 +80,42 @@ dataset_list = [
     dataset.apply_mask(mask=mask) for dataset, mask in zip(dataset_list, mask_list)
 ]
 dataset_list = [
-    dataset.apply_over_sampling(over_sample_size_lp=1) for dataset in dataset_list
+    dataset.apply_over_sampling(over_sample_size_lp=1, over_sample_size_pixelization=1)
+    for dataset in dataset_list
+]
+
+"""
+__Mesh & Adapt Images (per band)__
+
+The galaxy is named ``galaxy`` in the model, so the path tuple is
+``('galaxies', 'galaxy')``. ``dataset.data`` is used as a stand-in for the
+"previous-fit" galaxy image.
+"""
+mesh_pixels_yx = 28
+mesh_shape = (mesh_pixels_yx, mesh_pixels_yx)
+
+adapt_images_list = [
+    ag.AdaptImages(
+        galaxy_name_image_dict={
+            "('galaxies', 'galaxy')": dataset.data,
+        }
+    )
+    for dataset in dataset_list
 ]
 
 """
 __Model__
 
-Single galaxy with an MGE linear basis light profile — no lens/source split,
-no mass profile.
+Single galaxy with an adapt-image rectangular pixelization. The mesh shape is
+fixed (28 x 28) per the JAX static-shape requirement.
 """
-bulge = ag.model_util.mge_model_from(
-    mask_radius=mask_radius, total_gaussians=20, centre_prior_is_uniform=True
+pixelization = af.Model(
+    ag.Pixelization,
+    mesh=ag.mesh.RectangularAdaptImage(shape=mesh_shape, weight_power=1.0),
+    regularization=ag.reg.Adapt,
 )
 
-galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
+galaxy = af.Model(ag.Galaxy, redshift=0.5, pixelization=pixelization)
 model = af.Collection(galaxies=af.Collection(galaxy=galaxy))
 
 print(model.info)
@@ -98,25 +123,29 @@ print(model.info)
 """
 __Per-band models (option B)__
 
-Each band gets its own ``model.copy()`` with independent ``galaxy.bulge`` MGE
-``ell_comps`` priors to capture chromatic shape differences. All gaussians
-within the Basis share one ell_comps prior pair per basis; we re-tie them to
-a fresh pair per factor so each band gets its own shape freedom.
+Each band gets its own ``model.copy()`` with an independent prior on the
+regularization ``coefficient``. This is the pixelized analogue of "per-band
+shape": each band picks its own regularization strength.
 """
 model_per_band_list = []
 for _ in waveband_list:
     model_analysis = model.copy()
-    ec_0 = af.GaussianPrior(mean=0.0, sigma=0.5)
-    ec_1 = af.GaussianPrior(mean=0.0, sigma=0.5)
-    for gaussian in model_analysis.galaxies.galaxy.bulge.profile_list:
-        gaussian.ell_comps.ell_comps_0 = ec_0
-        gaussian.ell_comps.ell_comps_1 = ec_1
+    model_analysis.galaxies.galaxy.pixelization.regularization.inner_coefficient = (
+        af.GaussianPrior(mean=1.0, sigma=0.5)
+    )
     model_per_band_list.append(model_analysis)
 
 """
 __FactorGraphModel (vmap path)__
 """
-analysis_list = [ag.AnalysisImaging(dataset=dataset) for dataset in dataset_list]
+analysis_list = [
+    ag.AnalysisImaging(
+        dataset=dataset,
+        adapt_images=adapt_images,
+        settings=ag.Settings(use_border_relocator=True),
+    )
+    for dataset, adapt_images in zip(dataset_list, adapt_images_list)
+]
 
 analysis_factor_list = [
     af.AnalysisFactor(prior_model=m, analysis=analysis)
@@ -164,16 +193,23 @@ __Path A: jit-wrap ``factor_graph.log_likelihood_function``__
 
 ``FactorGraphModel`` has no ``fit_from`` method, so Path A jit-wraps a
 parameter-vector entry point that mirrors what ``fitness._vmap`` does
-internally: ``instance_from_vector`` → ``log_likelihood_function``. Passing a
-pre-built instance directly is not viable because
-``GlobalPriorModel.__init__`` stores a reference back to the ``FactorGraphModel``
-on the instance, and JAX pytree-flattens the whole instance and chokes on
-that non-registered leaf.
+internally: ``instance_from_vector`` → ``log_likelihood_function``.
+
+Pixelizations with adapt regularization run a sparse linear solve whose
+NumPy vs JAX float-ordering drift typically lands at ~1% — same as the
+single-dataset autogalaxy ``imaging/rectangular.py`` and
+``interferometer/rectangular.py``, so the rtol=1e-2 convention applies.
 """
 
 
 analysis_np_list = [
-    ag.AnalysisImaging(dataset=dataset, use_jax=False) for dataset in dataset_list
+    ag.AnalysisImaging(
+        dataset=dataset,
+        adapt_images=adapt_images,
+        settings=ag.Settings(use_border_relocator=True),
+        use_jax=False,
+    )
+    for dataset, adapt_images in zip(dataset_list, adapt_images_list)
 ]
 analysis_factor_np_list = [
     af.AnalysisFactor(prior_model=m, analysis=a)
@@ -190,30 +226,21 @@ instance_np = factor_graph_np.global_prior_model.instance_from_vector(
 log_l_np = float(factor_graph_np.log_likelihood_function(instance_np))
 print("NumPy log_likelihood_function:", log_l_np)
 
-analysis_jit_list = [
-    ag.AnalysisImaging(dataset=dataset, use_jax=True) for dataset in dataset_list
-]
-analysis_factor_jit_list = [
-    af.AnalysisFactor(prior_model=m, analysis=a)
-    for m, a in zip(model_per_band_list, analysis_jit_list)
-]
-factor_graph_jit = af.FactorGraphModel(*analysis_factor_jit_list, use_jax=True)
-
 
 @jax.jit
 def log_l_jit_fn(parameters):
-    instance = factor_graph_jit.global_prior_model.instance_from_vector(
+    instance = factor_graph.global_prior_model.instance_from_vector(
         vector=parameters, xp=jnp
     )
-    return factor_graph_jit.log_likelihood_function(instance)
+    return factor_graph.log_likelihood_function(instance)
 
 
 params_jit = jnp.array(
-    factor_graph_jit.global_prior_model.physical_values_from_prior_medians
+    factor_graph.global_prior_model.physical_values_from_prior_medians
 )
 log_l_jit = log_l_jit_fn(params_jit)
 
 print("JIT log_likelihood_function:", log_l_jit)
 assert isinstance(log_l_jit, jnp.ndarray), f"expected jax.Array, got {type(log_l_jit)}"
-np.testing.assert_allclose(float(log_l_jit), log_l_np, rtol=1e-4)
+np.testing.assert_allclose(float(log_l_jit), log_l_np, rtol=1e-2)
 print("PASS: jit(log_likelihood_function) round-trip matches NumPy scalar.")
