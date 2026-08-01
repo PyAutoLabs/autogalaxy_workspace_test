@@ -41,3 +41,4 @@
 - interferometer/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/interferometer/jax_test (interferometer consumers)
 - ellipse/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/ellipse/jax_test (ellipse/jax_likelihood consumers)
 - multi_dataset/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/multi_dataset/jax_test (multi consumers)
+- multi_dataset/jax_likelihood/rectangular.py # NEEDS_FIX 2026-08-01 - hung to the 1800s release cap in the 2026-08-01 20:23 release-integrate run (passes ~19s otherwise; intermittent XLA compile stall, same family as autolens_workspace_test delaunay); quarantined to unblock the 2026-08-01 release; see autolens_workspace_test#245
