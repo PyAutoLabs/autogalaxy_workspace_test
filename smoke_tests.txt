@@ -33,5 +33,6 @@ multi_dataset/jax_likelihood/rectangular_mge.py
 multi_dataset/jax_likelihood/delaunay.py
 multi_dataset/jax_likelihood/delaunay_mge.py
 imaging/model_fit.py
+imaging/point_source/simulator.py
 imaging/visualization/visualization.py
 misc/latent/latent_nan_robustness_jax.py
