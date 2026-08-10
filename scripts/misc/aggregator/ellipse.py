@@ -47,7 +47,10 @@ def aggregator_from(database_file, analysis, model, samples):
     result_path = path.join(conf.instance.output_path, "test_mode", database_file)
     clean(database_file)
     search = ag.m.MockSearch(
-        samples=samples, result=ag.m.MockResult(model=model, samples=samples)
+        samples=samples,
+        result=af.m.MockResult(
+            model=model, samples=samples, samples_summary=samples.summary()
+        ),
     )
     search.paths = af.DirectoryPaths(path_prefix=database_file)
     search.fit(model=model, analysis=analysis)
@@ -74,7 +77,19 @@ for i in range(len(ellipse_list)):
 
 model = af.Collection(ellipses=ellipse_list, multipoles=multipole_list_model)
 
-parameters = [model.prior_count * [1.0], model.prior_count * [10.0]]
+
+def parameter_list_with_physical_ell_comps(value):
+    parameter_list = model.prior_count * [value]
+    for index, path_tuple in enumerate(model.all_paths):
+        if "ell_comps" in path_tuple[0]:
+            parameter_list[index] = 0.1
+    return parameter_list
+
+
+parameters = [
+    parameter_list_with_physical_ell_comps(1.0),
+    parameter_list_with_physical_ell_comps(10.0),
+]
 sample_list = Sample.from_lists(
     model=model,
     parameter_lists=parameters,
@@ -84,7 +99,7 @@ sample_list = Sample.from_lists(
 )
 samples = ag.m.MockSamples(
     model=model,
-    prior_means=[1.0] * model.prior_count,
+    prior_means=parameter_list_with_physical_ell_comps(1.0),
     sample_list=sample_list,
 )
 
