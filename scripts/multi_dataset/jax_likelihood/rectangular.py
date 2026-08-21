@@ -4,7 +4,7 @@ JAX Likelihood: Rectangular Adapt-Image Pixelization (Multi-Wavelength)
 
 Verify that JAX can compute the log-likelihood of a multi-wavelength
 ``Imaging`` fit for an autogalaxy model using an adapt-image rectangular
-pixelization (``RectangularAdaptImage`` + ``Adapt`` regularization).
+pixelization (``RectangularBilinearAdaptImage`` + ``Adapt`` regularization).
 Two paths are exercised:
 
 1. ``fitness._vmap`` batch evaluation over a ``af.FactorGraphModel`` that
@@ -111,7 +111,7 @@ fixed (28 x 28) per the JAX static-shape requirement.
 """
 pixelization = af.Model(
     ag.Pixelization,
-    mesh=ag.mesh.RectangularAdaptImage(shape=mesh_shape, weight_power=1.0),
+    mesh=ag.mesh.RectangularBilinearAdaptImage(shape=mesh_shape, weight_power=1.0),
     regularization=ag.reg.Adapt,
 )
 

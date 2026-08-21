@@ -15,7 +15,7 @@ Structure
 
 2. ``visualize`` runs once per galaxy type, each writing into its own subfolder:
      visualization/parametric/   — Sersic light-profile galaxy
-     visualization/rectangular/  — RectangularAdaptImage pixelization
+     visualization/rectangular/  — RectangularBilinearAdaptImage pixelization
      visualization/delaunay/     — Delaunay pixelization
 
    Each subfolder contains only the per-run comparison plots:
@@ -117,7 +117,7 @@ galaxy_parametric = af.Model(ag.Galaxy, redshift=0.5, bulge=galaxy_bulge)
 model_parametric = af.Collection(galaxies=af.Collection(galaxy=galaxy_parametric))
 
 # --- Rectangular pixelization ---
-mesh_rect = ag.mesh.RectangularAdaptImage(shape=(22, 22))
+mesh_rect = ag.mesh.RectangularBilinearAdaptImage(shape=(22, 22))
 reg_rect = ag.reg.Constant(coefficient=1.0)
 pix_rect = ag.Pixelization(mesh=mesh_rect, regularization=reg_rect)
 galaxy_rectangular = af.Model(ag.Galaxy, redshift=0.5, pixelization=pix_rect)
