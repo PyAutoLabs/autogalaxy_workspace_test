@@ -4,7 +4,7 @@ JAX Likelihood: Rectangular Adapt-Image Pixelization + MGE Bulge
 
 Two-galaxy autogalaxy model: a foreground galaxy with an MGE bulge and a
 second galaxy with an adapt-image rectangular pixelization
-(``RectangularAdaptImage`` + ``Constant`` regularization).
+(``RectangularBilinearAdaptImage`` + ``Constant`` regularization).
 
 This is the multi-pixelization regression case the path-tuple library fix
 was made for: prior to the fix the autolens fallback would silently return
@@ -108,7 +108,7 @@ bulge = ag.model_util.mge_model_from(
 
 galaxy_0 = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 
-mesh = ag.mesh.RectangularAdaptImage(shape=(28, 28))
+mesh = ag.mesh.RectangularBilinearAdaptImage(shape=(28, 28))
 regularization = ag.reg.Constant(coefficient=1.0)
 pixelization = ag.Pixelization(mesh=mesh, regularization=regularization)
 

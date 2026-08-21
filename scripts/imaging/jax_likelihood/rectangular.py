@@ -4,7 +4,7 @@ JAX Likelihood: Rectangular Adapt-Image Pixelization
 
 Verify that JAX can compute the log-likelihood of an ``Imaging`` fit for an
 autogalaxy model that uses an adapt-image rectangular pixelization
-(``RectangularAdaptImage`` + ``Adapt`` regularization).
+(``RectangularBilinearAdaptImage`` + ``Adapt`` regularization).
 
 Two paths are exercised:
 
@@ -83,7 +83,7 @@ __Model__
 Single galaxy with an adapt-image rectangular pixelization. The mesh shape is
 fixed (28 x 28) per the JAX static-shape requirement.
 """
-mesh = ag.mesh.RectangularAdaptImage(shape=(28, 28), weight_power=1.0)
+mesh = ag.mesh.RectangularBilinearAdaptImage(shape=(28, 28), weight_power=1.0)
 regularization = ag.reg.Adapt()
 pixelization = ag.Pixelization(mesh=mesh, regularization=regularization)
 

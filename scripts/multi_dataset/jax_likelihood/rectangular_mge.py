@@ -116,7 +116,7 @@ galaxy_0 = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 
 pixelization = af.Model(
     ag.Pixelization,
-    mesh=ag.mesh.RectangularAdaptImage(shape=mesh_shape, weight_power=1.0),
+    mesh=ag.mesh.RectangularBilinearAdaptImage(shape=mesh_shape, weight_power=1.0),
     regularization=ag.reg.Adapt,
 )
 
