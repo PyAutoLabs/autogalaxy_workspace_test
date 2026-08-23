@@ -9,7 +9,7 @@ imaging/jax_likelihood/lp.py
 imaging/jax_likelihood/mge.py
 # imaging/jax_likelihood/mge_group.py  # NEEDS_FIX 2026-08-23: intermittent XLA compile stall — hung past the 300s per-script cap in #109 (silent after "JAX jit compiling vectorized (vmap) likelihood function"). See the matching no_run.yaml entry and autolens_workspace_test#245.
 imaging/jax_likelihood/rectangular.py
-imaging/jax_likelihood/rectangular_mge.py
+# imaging/jax_likelihood/rectangular_mge.py  # NEEDS_FIX 2026-08-23: intermittent XLA compile stall — hung past the 300s per-script cap on the 3.12 leg of #109 while PASSING on 3.13 for the same commit. Same family as mge_group.py above; see no_run.yaml and autolens_workspace_test#245.
 imaging/jax_likelihood/delaunay.py
 # imaging/jax_likelihood/delaunay_mge.py  # disabled: jax 0.7 removed jax.interpreters.xla.pytype_aval_mappings — see PyAutoPrompt/autohands/smoke_workspace_fixes.md
 imaging/jax_grad/lp.py
