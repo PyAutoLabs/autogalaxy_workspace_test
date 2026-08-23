@@ -7,7 +7,7 @@ multi_galaxy/model_fit.py
 cluster/model_fit.py
 imaging/jax_likelihood/lp.py
 imaging/jax_likelihood/mge.py
-imaging/jax_likelihood/mge_group.py
+# imaging/jax_likelihood/mge_group.py  # NEEDS_FIX 2026-08-23: intermittent XLA compile stall — hung past the 300s per-script cap in #109 (silent after "JAX jit compiling vectorized (vmap) likelihood function"). See the matching no_run.yaml entry and autolens_workspace_test#245.
 imaging/jax_likelihood/rectangular.py
 imaging/jax_likelihood/rectangular_mge.py
 imaging/jax_likelihood/delaunay.py
