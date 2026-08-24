@@ -17,19 +17,10 @@
 #   banner. Investigate the failure, fix the underlying bug, and remove
 #   the NEEDS_FIX marker.
 
-- multi_dataset/jax_likelihood/delaunay_mge # SLOW 2026-07-14 - real-search JAX Delaunay-MGE multi-band likelihood is borderline against the 1800s mode=release cap (its autolens_workspace_test sibling times out); skipped to keep release-validation deterministic. Speedup tracked by the Profiling Agent (PyAutoHeart#72). Not a bug.
-# Real-search JAX likelihood/gradient scripts that flake around the mode=release
-# per-script timeout cap. SLOW-skipped to keep mode=release deterministic; reviewed
-# via hygiene over time. Speedups are the Profiling Agent's job. Not bugs.
-# (PyAutoHeart#74 — chose no_run over an advisory tier.)
-- interferometer/jax_likelihood/mge.py # SLOW 2026-07-14 - real-search JAX interferometer MGE likelihood; flakes at the 1800s mode=release cap (PyAutoHeart#74)
-- interferometer/jax_likelihood/mge_group.py # SLOW 2026-07-14 - real-search JAX interferometer MGE-group likelihood; flakes at the 1800s cap (PyAutoHeart#74)
-- interferometer/jax_likelihood/delaunay.py # SLOW 2026-07-14 - real-search JAX interferometer Delaunay likelihood; flakes at the 1800s cap (PyAutoHeart#74)
-- interferometer/jax_likelihood/delaunay_mge.py # SLOW 2026-07-14 - real-search JAX interferometer Delaunay-MGE likelihood; flakes at the 1800s cap (PyAutoHeart#74)
-- interferometer/jax_likelihood/rectangular_mge.py # SLOW 2026-07-14 - real-search JAX interferometer rectangular-MGE likelihood; flakes at the 1800s cap (PyAutoHeart#74)
-- imaging/jax_likelihood/delaunay_mge.py # SLOW 2026-07-14 - real-search JAX imaging Delaunay-MGE likelihood; flakes at the 1800s cap (PyAutoHeart#74)
-- interferometer/jax_grad/mge.py # SLOW 2026-07-14 - finite-difference JAX interferometer MGE gradient; flakes at the 1800s cap (PyAutoHeart#74)
-- multi_dataset/jax_grad/mge.py # SLOW 2026-07-14 - finite-difference JAX multi-band MGE gradient; flakes at the 1800s cap (PyAutoHeart#74)
+# The 8-entry PyAutoHeart#74 "flakes at the 1800s cap" SLOW family was retimed on
+# 2026-08-24 (5 repeats per Python leg, 300s cap; run 32741366534, phase-2 run
+# 32664679042): every entry completed 5/5 on both legs, slowest 3-14% of the cap.
+# Marker refuted — entries removed, scripts back in mega-run coverage (autolens_workspace_test#274).
 
 # BOOTSTRAP-TARGET simulators (NOT to-do markers — correct as-is). These scripts
 # write dataset/ fixtures that are no longer committed (git rm'd, gitignored); the
