@@ -32,6 +32,32 @@
 - interferometer/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/interferometer/jax_test (interferometer consumers)
 - ellipse/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/ellipse/jax_test (ellipse/jax_likelihood consumers)
 - multi_dataset/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/multi_dataset/jax_test (multi consumers)
-- multi_dataset/jax_likelihood/rectangular.py # NEEDS_FIX 2026-08-01 - hung to the 1800s release cap in the 2026-08-01 20:23 release-integrate run (passes ~19s otherwise; intermittent XLA compile stall, same family as autolens_workspace_test delaunay); quarantined to unblock the 2026-08-01 release; see autolens_workspace_test#245
-- imaging/jax_likelihood/mge_group.py # NEEDS_FIX 2026-08-23 - hung to the 300s smoke cap in the #109 run (last output "JAX jit compiling vectorized (vmap) likelihood function", then silence for the full 300s; its sibling imaging/jax_likelihood/mge.py passes in 9.4s with a 2.5s vmap+JIT, and this script passes on main); intermittent XLA compile stall, same family as multi_dataset/jax_likelihood/rectangular.py above; quarantined to unblock the per-script timeout backport; see autolens_workspace_test#245
-- imaging/jax_likelihood/rectangular_mge.py # NEEDS_FIX 2026-08-23 - hung to the 300s smoke cap on the 3.12 leg of #109 while PASSING on 3.13 for the identical commit, so the stall is a per-compile probability rather than a property of the script or the Python version; same composite-MGE family as imaging/jax_likelihood/mge_group.py above (plain mge.py passes in 9.4s); quarantined to unblock the per-script timeout backport; see autolens_workspace_test#245
+
+# The jax-compile-stall family is RESTORED (PyAutoFit#1528, 2026-08-27). Three
+# entries were removed from this file and re-enabled in smoke_tests.txt:
+#
+#   multi_dataset/jax_likelihood/rectangular.py   NEEDS_FIX 2026-08-01
+#   imaging/jax_likelihood/mge_group.py           NEEDS_FIX 2026-08-23
+#   imaging/jax_likelihood/rectangular_mge.py     NEEDS_FIX 2026-08-23
+#
+# The name every marker used was wrong. It is NOT an XLA compile stall: the
+# captured stacks put the process in jax.block_until_ready / jax.Array._value
+# with compilation already finished in ~12-18s. It is an execution hang --
+# materialising the vmap result never returns.
+#
+# The trigger is XLA CPU's multithreaded Eigen thread pool.
+# profile_smoke.yaml and profile_release.yaml now set
+# XLA_FLAGS=--xla_cpu_multi_thread_eigen=false. ABAB on autolens_workspace_test's
+# imaging/jax_likelihood/mge_group.py, 3 repeats x 2 Python legs at the 300s
+# cap: 12 passes / 0 hangs with the flag against 2 passes / 14 hangs without
+# (Fisher exact p ~ 3e-6).
+#
+# Family re-time with the flag (run 33087271848), 3 repeats x 2 legs, 18/18
+# completions, verdict NEITHER on every entry and every leg:
+#   multi_dataset/jax_likelihood/rectangular.py  20.0s / 21.9s
+#   imaging/jax_likelihood/mge_group.py          32.8s / 32.6s
+#   imaging/jax_likelihood/rectangular_mge.py    22.9s / 24.1s
+#
+# This is a WORKAROUND, not a root-cause fix: we know where it hangs and what
+# avoids it, not why XLA's CPU thread pool wedges on these graphs. If the flag
+# is ever removed, expect these three back.
