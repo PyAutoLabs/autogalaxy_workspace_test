@@ -32,6 +32,8 @@ multi_dataset/jax_likelihood/rectangular.py
 multi_dataset/jax_likelihood/rectangular_mge.py
 multi_dataset/jax_likelihood/delaunay.py
 multi_dataset/jax_likelihood/delaunay_mge.py
+misc/jax_assertions/fit_imaging_sparse_operator.py
+misc/jax_assertions/fit_interferometer_sparse_operator.py
 imaging/model_fit.py
 imaging/point_source/simulator.py
 imaging/visualization/visualization.py
