@@ -33,6 +33,8 @@
 - ellipse/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/ellipse/jax_test (ellipse/jax_likelihood consumers)
 - multi_dataset/jax_likelihood/simulator.py # BOOTSTRAP-TARGET - produces dataset/multi_dataset/jax_test (multi consumers)
 
+- multi_dataset/jax_likelihood/rectangular.py # NEEDS_FIX 2026-08-29 - re-quarantined: hung 1805s at the release cap in release-integrate run 33244320906 with XLA_FLAGS=--xla_cpu_multi_thread_eigen=false in force — same execution-hang signature as the family below (epic xla-cpu-eigen-pool-deadlock). Restored 2026-08-27 by PyAutoFit#1528 (20.0s/21.9s in the family re-time below); intermittent since — it passed integrate runs 33230028707 and 33255903385 the same day. Fourth family member re-quarantined, after autolens_workspace_test's delaunay.py, shared_preloads.py and delaunay_mge.py. Stays on the smoke gate (smoke_tests.txt), which deliberately does not apply this file.
+
 # The jax-compile-stall family is RESTORED (PyAutoFit#1528, 2026-08-27). Three
 # entries were removed from this file and re-enabled in smoke_tests.txt:
 #
