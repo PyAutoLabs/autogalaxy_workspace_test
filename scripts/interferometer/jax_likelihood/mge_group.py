@@ -14,6 +14,10 @@ Two paths are exercised:
    ``AnalysisInterferometer._register_fit_interferometer_pytrees`` — this path
    exercises the full ``FitInterferometer`` return value flattening.
 
+Fits ``dataset/interferometer/jax_test_group``, the variant of the shared
+JAX interferometer dataset that actually contains the two extra galaxies
+this model composes — the model has to match the data it fits.
+
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
@@ -34,7 +38,7 @@ import autofit as af
 import autogalaxy as ag
 
 
-dataset_path = path.join("dataset", "interferometer", "jax_test")
+dataset_path = path.join("dataset", "interferometer", "jax_test_group")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
@@ -49,8 +53,8 @@ if ag.util.dataset.should_simulate(dataset_path):
     )
 
 real_space_mask = ag.Mask2D.circular(
-    shape_native=(256, 256),
-    pixel_scales=0.1,
+    shape_native=(128, 128),
+    pixel_scales=0.2,
     radius=3.0,
 )
 
@@ -67,7 +71,7 @@ print(f"Total Visibilities: {dataset.uv_wavelengths.shape[0]}")
 """
 __Group Centres__
 """
-centre_list = [(0.0, 0.0), (0.0, 1.0), (0.0, 2.0), (0.0, 3.0), (0.0, 4.0)]
+centre_list = [(1.2, 1.2), (-1.0, 1.5)]
 
 mask_radius = 3.0
 
@@ -77,7 +81,7 @@ __Model__
 Single primary galaxy with an MGE linear basis, plus extra galaxies (each with
 a spherical MGE linear basis). No mass profiles, no lens/source split.
 """
-total_gaussians = 30
+total_gaussians = 20
 gaussian_per_basis = 2
 
 log10_sigma_list = np.linspace(-2, np.log10(mask_radius), total_gaussians)
@@ -112,7 +116,7 @@ galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 extra_galaxies_list = []
 
 for extra_galaxy_centre in centre_list:
-    total_gaussians = 10
+    total_gaussians = 8
 
     log10_sigma_list = np.linspace(-2, np.log10(mask_radius), total_gaussians)
 
@@ -157,7 +161,7 @@ vectors. This tests that the full likelihood pipeline JIT-compiles end to end.
 """
 from autofit.non_linear.fitness import Fitness
 
-batch_size = 50
+batch_size = 10
 
 fitness = Fitness(
     model=model,

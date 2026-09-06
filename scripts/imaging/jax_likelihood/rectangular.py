@@ -49,7 +49,7 @@ dataset = ag.Imaging.from_fits(
     data_path=path.join(dataset_path, "data.fits"),
     psf_path=path.join(dataset_path, "psf.fits"),
     noise_map_path=path.join(dataset_path, "noise_map.fits"),
-    pixel_scales=0.2,
+    pixel_scales=0.3,
 )
 
 mask = ag.Mask2D.circular(
@@ -60,7 +60,7 @@ mask = ag.Mask2D.circular(
 
 dataset = dataset.apply_mask(mask=mask)
 dataset = dataset.apply_over_sampling(
-    over_sample_size_lp=4,
+    over_sample_size_lp=2,
     over_sample_size_pixelization=4,
 )
 
@@ -81,9 +81,16 @@ adapt_images = ag.AdaptImages(galaxy_name_image_dict=galaxy_name_image_dict)
 __Model__
 
 Single galaxy with an adapt-image rectangular pixelization. The mesh shape is
-fixed (28 x 28) per the JAX static-shape requirement.
+fixed (17 x 17) per the JAX static-shape requirement.
+
+17 x 17 = 289 source pixels is the largest square mesh the data can constrain:
+the 3.0" mask holds 316 image pixels at this dataset's 0.3"/pixel. The mesh was
+28 x 28 (784 source pixels) when the shared dataset was 0.2"/pixel and the same
+mask held 716 image pixels; carrying that mesh over to the coarser data would
+leave the inversion under-determined by 2.5x — a model that does not match the
+data it fits.
 """
-mesh = ag.mesh.RectangularBilinearAdaptImage(shape=(28, 28), weight_power=1.0)
+mesh = ag.mesh.RectangularBilinearAdaptImage(shape=(17, 17), weight_power=1.0)
 regularization = ag.reg.Adapt()
 pixelization = ag.Pixelization(mesh=mesh, regularization=regularization)
 

@@ -16,6 +16,10 @@ Uses **option B** — per-band ``galaxy.bulge`` MGE ``ell_comps`` priors via
 ``model.copy()`` + ``af.GaussianPrior`` on each ``AnalysisFactor``. The extra
 galaxies stay shared across bands.
 
+Fits ``dataset/multi_dataset/jax_test_group``, the variant of the shared
+JAX multi-wavelength dataset that actually contains the two extra galaxies
+this model composes — the model has to match the data it fits.
+
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
@@ -36,10 +40,10 @@ import autogalaxy as ag
 
 
 waveband_list = ["g", "r"]
-pixel_scales = 0.1
+pixel_scales = 0.2
 mask_radius = 3.0
 
-dataset_path = path.join("dataset", "multi_dataset", "jax_test")
+dataset_path = path.join("dataset", "multi_dataset", "jax_test_group")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
@@ -79,11 +83,12 @@ dataset_list = [
 """
 __Group Centres__
 
-The multi simulator does not include extra galaxies, so the extra-galaxy
-components here have no data support. They still exercise the MGE +
-``extra_galaxies`` wiring through the JAX factor graph.
+These are the centres the multi simulator puts the two extra galaxies at in
+``jax_test_group``, so the extra-galaxy components here have data support as
+well as exercising the MGE + ``extra_galaxies`` wiring through the JAX factor
+graph.
 """
-centre_list = [(0.0, 1.0), (1.0, 0.0)]
+centre_list = [(1.2, 1.2), (-1.0, 1.5)]
 
 """
 __Model__

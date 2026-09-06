@@ -13,6 +13,10 @@ Two paths are exercised:
    registration added to ``AnalysisImaging._register_fit_imaging_pytrees`` —
    this path exercises the full ``FitImaging`` return value flattening.
 
+Fits ``dataset/imaging/jax_test_group``, the variant of the shared JAX
+imaging dataset that actually contains the two extra galaxies this model
+composes — the model has to match the data it fits.
+
 __Env__
 
 Test-harness configuration (PyAutoHands docs/env_profile_redesign.md §10).
@@ -33,7 +37,7 @@ import autofit as af
 import autogalaxy as ag
 
 
-dataset_path = path.join("dataset", "imaging", "jax_test")
+dataset_path = path.join("dataset", "imaging", "jax_test_group")
 
 if ag.util.dataset.should_simulate(dataset_path):
     import subprocess
@@ -48,25 +52,27 @@ dataset = ag.Imaging.from_fits(
     data_path=path.join(dataset_path, "data.fits"),
     psf_path=path.join(dataset_path, "psf.fits"),
     noise_map_path=path.join(dataset_path, "noise_map.fits"),
-    pixel_scales=0.2,
+    pixel_scales=0.3,
 )
 
 """
 __Group Centres__
 """
-centre_list = [(0.0, 0.0), (0.0, 1.0), (0.0, 2.0), (0.0, 3.0), (0.0, 4.0)]
+centre_list = [(1.2, 1.2), (-1.0, 1.5)]
 
 mask_radius = 3.0
 
 mask = ag.Mask2D.circular(
-    shape_native=dataset.shape_native, pixel_scales=dataset.pixel_scales, radius=4.0
+    shape_native=dataset.shape_native,
+    pixel_scales=dataset.pixel_scales,
+    radius=mask_radius,
 )
 
 dataset = dataset.apply_mask(mask=mask)
 
 over_sample_size = ag.util.over_sample.over_sample_size_via_radial_bins_from(
     grid=dataset.grid,
-    sub_size_list=[4, 2, 2],
+    sub_size_list=[2, 2, 1],
     radial_list=[0.3, 0.6],
     centre_list=[(0.0, 0.0)] + centre_list,
 )
@@ -79,7 +85,7 @@ __Model__
 Single primary galaxy with an MGE linear basis, plus extra galaxies (each with
 a spherical MGE linear basis). No mass profiles, no lens/source split.
 """
-total_gaussians = 30
+total_gaussians = 20
 gaussian_per_basis = 2
 
 log10_sigma_list = np.linspace(-2, np.log10(mask_radius), total_gaussians)
@@ -114,7 +120,7 @@ galaxy = af.Model(ag.Galaxy, redshift=0.5, bulge=bulge)
 extra_galaxies_list = []
 
 for extra_galaxy_centre in centre_list:
-    total_gaussians = 10
+    total_gaussians = 8
 
     log10_sigma_list = np.linspace(-2, np.log10(mask_radius), total_gaussians)
 
@@ -157,7 +163,7 @@ vectors. This tests that the full likelihood pipeline JIT-compiles end to end.
 """
 from autofit.non_linear.fitness import Fitness
 
-batch_size = 50
+batch_size = 10
 
 fitness = Fitness(
     model=model,

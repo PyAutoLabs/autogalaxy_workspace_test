@@ -41,7 +41,7 @@ import autogalaxy as ag
 
 
 waveband_list = ["g", "r"]
-pixel_scales = 0.1
+pixel_scales = 0.2
 mask_radius = 3.0
 
 dataset_path = path.join("dataset", "multi_dataset", "jax_test")
