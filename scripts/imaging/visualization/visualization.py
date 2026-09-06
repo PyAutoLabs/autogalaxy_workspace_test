@@ -66,7 +66,7 @@ __Dataset__
 
 Reuse the ``jax_test`` dataset from ``scripts/imaging/jax_likelihood``.
 """
-pixel_scale = 0.2
+pixel_scale = 0.3
 
 dataset_path = path.join("dataset", "imaging", "jax_test")
 

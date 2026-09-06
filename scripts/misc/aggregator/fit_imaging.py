@@ -208,7 +208,7 @@ imaging = ag.Imaging(
     data=make_image_7x7(),
     psf=make_psf_3x3(),
     noise_map=make_noise_map_7x7(),
-    over_sample_size_lp=5,
+    over_sample_size_lp=2,
     over_sample_size_pixelization=3,
 )
 masked_imaging_oversampled = imaging.apply_mask(mask=make_mask_2d_7x7())
@@ -250,7 +250,7 @@ dataset_gen = dataset_agg.dataset_gen_from()
 
 for dataset_list in dataset_gen:
     assert (dataset_list[0].data == masked_imaging_oversampled.data).all()
-    assert dataset_list[0].grids.over_sample_size_lp.slim[0] == 5
+    assert dataset_list[0].grids.over_sample_size_lp.slim[0] == 2
     assert dataset_list[0].grids.over_sample_size_pixelization.slim[0] == 3
 
 database_sqlite = path.join(conf.instance.output_path, f"{db_file_imaging}.sqlite")

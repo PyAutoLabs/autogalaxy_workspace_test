@@ -47,7 +47,7 @@ dataset = ag.Imaging.from_fits(
     data_path=path.join(dataset_path, "data.fits"),
     psf_path=path.join(dataset_path, "psf.fits"),
     noise_map_path=path.join(dataset_path, "noise_map.fits"),
-    pixel_scales=0.2,
+    pixel_scales=0.3,
 )
 
 mask_radius = 3.0
@@ -95,7 +95,7 @@ vectors. This tests that the full likelihood pipeline JIT-compiles end to end.
 """
 from autofit.non_linear.fitness import Fitness
 
-batch_size = 50
+batch_size = 10
 
 fitness = Fitness(
     model=model,

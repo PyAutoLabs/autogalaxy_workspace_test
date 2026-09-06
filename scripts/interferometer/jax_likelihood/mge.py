@@ -48,8 +48,8 @@ if ag.util.dataset.should_simulate(dataset_path):
     )
 
 real_space_mask = ag.Mask2D.circular(
-    shape_native=(256, 256),
-    pixel_scales=0.1,
+    shape_native=(128, 128),
+    pixel_scales=0.2,
     radius=3.0,
 )
 
@@ -91,7 +91,7 @@ vectors. This tests that the full likelihood pipeline JIT-compiles end to end.
 """
 from autofit.non_linear.fitness import Fitness
 
-batch_size = 50
+batch_size = 10
 
 fitness = Fitness(
     model=model,
