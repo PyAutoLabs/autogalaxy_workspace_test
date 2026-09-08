@@ -190,7 +190,7 @@ __Visualize Before Fit__
 
 Uses the parametric galaxy (fastest) for all before-fit outputs.
 
-Calls PlotterImaging.imaging()       -> dataset.png, dataset.fits
+Calls PlotterImaging.imaging()       -> dataset.png
       Plotter.adapt_images()         -> adapt_images.png, adapt_images.fits
 """
 
@@ -209,24 +209,17 @@ print(f"visualize_before_fit complete in {time.perf_counter() - _t0:.2f}s")
 __Assertions: visualize_before_fit__
 """
 
-# ---- dataset.fits ----
-# Source: PlotterImaging.imaging() -> hdu_list_for_output_from with ext_name_list:
-#   ["mask", "data", "noise_map", "psf", "over_sample_size_lp", "over_sample_size_pixelization"]
-# HDU 0 is PrimaryHDU (first value), HDUs 1-5 are ImageHDU.
-
 assert (image_path / "dataset.png").exists(), "dataset.png missing"
 print("dataset.png OK")
 
-with astropy_fits.open(image_path / "dataset.fits") as hdul:
-    assert len(hdul) == 6, f"dataset.fits: expected 6 HDUs, got {len(hdul)}"
-    assert hdul[0].name == "MASK"
-    assert hdul[1].name == "DATA"
-    assert hdul[2].name == "NOISE_MAP"
-    assert hdul[3].name == "PSF"
-    assert hdul[4].name == "OVER_SAMPLE_SIZE_LP"
-    assert hdul[5].name == "OVER_SAMPLE_SIZE_PIXELIZATION"
-    assert hdul[1].data.ndim == 2, "DATA HDU should be 2D"
-print("dataset.fits OK")
+# ---- dataset.fits (must NOT be written by the plotter) ----
+# Since PyAutoGalaxy#608 `dataset.fits` is written once per search by
+# `Analysis.save_attributes` (to the search's `image/` folder) and the plotter
+# no longer writes it; the HDU layout is covered by the library
+# `save_attributes` tests. Assert the plotter left no copy behind, so a
+# reintroduced plotter write (a duplicate) fails here.
+assert not (image_path / "dataset.fits").exists(), "plotter must not write dataset.fits"
+print("dataset.fits not written by plotter OK")
 
 # ---- adapt_images.fits ----
 # Source: Plotter.adapt_images() -> hdu_list_for_output_from with ext_name_list:

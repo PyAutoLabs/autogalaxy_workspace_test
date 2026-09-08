@@ -3,7 +3,6 @@ fits_are_zoomed: false
 
 dataset:
   subplot_dataset: true
-  fits_dataset: true
 
 fit:
   subplot_fit: true
