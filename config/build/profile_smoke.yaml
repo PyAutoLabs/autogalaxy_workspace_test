@@ -49,9 +49,8 @@ defaults:
 # PYAUTO_TEST_MODE) with no set: clause, so each has been migrated to an
 # in-file `# ENV:` declaration on the matched script(s) — #187 Stage 2.
 overrides:
-  # ---------------------------------------------------------------------------
-  # A2 — scripts/interferometer/jax_likelihood/delaunay_mge.py
-  #      (autogalaxy_workspace_test)
+  # JAX persistent-cache threshold for the interferometer Delaunay+MGE
+  # JAX-likelihood script (PyAutoBrain /ci_speedup, 2026-09-10).
   #
   # COST: this script compiles 507 distinct XLA executables. Exactly ONE
   # (`jit(call)`, the vmapped likelihood, 2.54s) clears JAX's default
