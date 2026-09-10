@@ -48,4 +48,47 @@ defaults:
 # (PYAUTO_SMALL_DATASETS / PYAUTO_DISABLE_JAX / PYAUTO_FAST_PLOTS /
 # PYAUTO_TEST_MODE) with no set: clause, so each has been migrated to an
 # in-file `# ENV:` declaration on the matched script(s) — #187 Stage 2.
-overrides: []
+overrides:
+  # ---------------------------------------------------------------------------
+  # A2 — scripts/interferometer/jax_likelihood/delaunay_mge.py
+  #      (autogalaxy_workspace_test)
+  #
+  # COST: this script compiles 507 distinct XLA executables. Exactly ONE
+  # (`jit(call)`, the vmapped likelihood, 2.54s) clears JAX's default
+  # `jax_persistent_cache_min_compile_time_secs` of 1.0s — which is also what
+  # `autonerves/jax_wrapper.py` os.environ.setdefault()s, so CI inherits it. The
+  # other 506 compile in 12.9s and are NEVER written to the persistent cache, so
+  # CI re-pays them on every run. The board's `cache_jax: HIT` is a hit on a
+  # cache holding 1 entry (measured: `find <cachedir> -type f | wc -l` == 1).
+  #
+  # MEASURED (local, jax cache warm, numba cache warm, PROFILE=smoke,
+  # `ENV: jax full_datasets`, harness `smoke_run.sh`):
+  #   threshold 1.0 (the CI regime)   31.3s / 30.5s   cache dir: 1 entry, 324K
+  #   threshold 0   (this override)   18.1s / 18.3s   cache dir: 729 entries, 4.4M
+  #   cold dir, threshold 1.0         33.5s
+  #   cold dir, threshold 0           34.7s   (+1.2s one-off, to write 506 entries)
+  # The CI regime reproduces the board exactly: 30.5-31.3s local vs 32.2s (py3.13)
+  # / 31.8s (py3.12) on run 34262404770.
+  #
+  # WHY EVERY ASSERTION SURVIVES: this is a compilation-*cache* policy knob. It
+  # changes which XLA executables are persisted to disk, nothing about the graph,
+  # the dtypes, the backend or the arithmetic. The script is not touched, so it
+  # is identical under PROFILE=release. Verified byte-identical output either
+  # side of the change: `JIT fit.log_likelihood: -3320.158760510604` and
+  # `NumPy fit.log_likelihood: -3320.1587601763285` in all four runs above, RC=0.
+  #
+  # NOTE FOR THE HUMAN: this knob is script-independent — it is worth ~12s on
+  # EVERY jax_likelihood/jax_grad script in the leg, not just this one (agent A1
+  # measured the same effect on autolens imaging/jax_likelihood/delaunay.py). Its
+  # right home is the `defaults:` block of this file, or PyAutoHeart's
+  # `smoke-tests.yml` which owns the cache dir and its restore key. The
+  # per-script `overrides:` block below is the minimal, in-lane form.
+  #
+  # `JAX_PERSISTENT_CACHE_MIN_ENTRY_SIZE_BYTES` is deliberately NOT set: JAX's
+  # default for it is already 0 (jax/_src/config.py:1507), so setting it is a
+  # no-op. Only the compile-time threshold differs from CI.
+  # ---------------------------------------------------------------------------
+  - pattern: interferometer/jax_likelihood/delaunay_mge.py
+    set:
+      JAX_PERSISTENT_CACHE_MIN_COMPILE_TIME_SECS: "0"
+
