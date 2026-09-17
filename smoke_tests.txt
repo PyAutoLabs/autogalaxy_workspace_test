@@ -11,7 +11,8 @@ imaging/jax_likelihood/mge_group.py
 imaging/jax_likelihood/rectangular.py
 imaging/jax_likelihood/rectangular_mge.py
 imaging/jax_likelihood/delaunay.py
-# imaging/jax_likelihood/delaunay_mge.py  # disabled: jax 0.7 removed jax.interpreters.xla.pytype_aval_mappings — see PyAutoPrompt/autohands/smoke_workspace_fixes.md
+# promoted 2026-09-15 (autolens_workspace_test#317) — disabled 2026-04 for jax 0.7's removed pytype_aval_mappings; refuted on jax 0.10.2: 6/6 release-profile pass 2026-08-21 and again 2026-09-15, 3/3 cold smoke runs at 68.1/70.7/71.1 s vs the 300 s cap. Same reason delaunay.py was promoted in #296: off this gate, a break reaches the weekly/integrate channels silently.
+imaging/jax_likelihood/delaunay_mge.py
 imaging/jax_grad/lp.py
 imaging/jax_grad/mge.py
 interferometer/jax_grad/lp.py
