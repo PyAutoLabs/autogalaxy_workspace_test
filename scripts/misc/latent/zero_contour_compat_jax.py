@@ -51,13 +51,9 @@ for radius in radii:
     compiled = jax.jit(contour)(radius)
     assert np.isfinite(compiled).all()
     np.testing.assert_allclose(compiled, eager, atol=1e-9)
-    np.testing.assert_allclose(
-        jnp.linalg.norm(compiled, axis=-1), radius, atol=1e-9
-    )
+    np.testing.assert_allclose(jnp.linalg.norm(compiled, axis=-1), radius, atol=1e-9)
 
-np.testing.assert_allclose(
-    jax.jit(jax.vmap(recovered_radius))(radii), radii, atol=1e-9
-)
+np.testing.assert_allclose(jax.jit(jax.vmap(recovered_radius))(radii), radii, atol=1e-9)
 np.testing.assert_allclose(
     jax.jit(jax.vmap(jax.grad(recovered_radius)))(radii), 1.0, atol=1e-8
 )
