@@ -35,8 +35,9 @@ multi_dataset/jax_likelihood/delaunay.py
 multi_dataset/jax_likelihood/delaunay_mge.py
 misc/jax_assertions/fit_imaging_sparse_operator.py
 misc/jax_assertions/fit_interferometer_sparse_operator.py
+misc/multipole_isothermal_guard_jit.py
 imaging/model_fit.py
 imaging/point_source/simulator.py
 imaging/visualization/visualization.py
 misc/latent/latent_nan_robustness_jax.py
-misc/multipole_isothermal_guard_jit.py
+misc/mass_sheet_jit.py
