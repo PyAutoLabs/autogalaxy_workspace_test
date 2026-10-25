@@ -39,3 +39,4 @@ imaging/model_fit.py
 imaging/point_source/simulator.py
 imaging/visualization/visualization.py
 misc/latent/latent_nan_robustness_jax.py
+misc/mass_sheet_jit.py
