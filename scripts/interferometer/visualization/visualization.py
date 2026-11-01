@@ -41,17 +41,9 @@ Auto-simulate if the dataset is missing.
 """
 dataset_path = path.join("dataset", "interferometer", "jax_test")
 
-if ag.util.dataset.should_simulate(dataset_path):
-    import subprocess
-    import sys
-
-    subprocess.run(
-        [
-            sys.executable,
-            "scripts/interferometer/jax_likelihood/simulator.py",
-        ],
-        check=True,
-    )
+ag.util.dataset.simulate_if_needed(
+    dataset_path, simulator="scripts/interferometer/jax_likelihood/simulator.py"
+)
 
 mask_radius = 3.0
 

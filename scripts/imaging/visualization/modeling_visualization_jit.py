@@ -55,14 +55,9 @@ Re-use the ``jax_test`` dataset that the jax_likelihood scripts rely on.
 """
 dataset_path = path.join("dataset", "imaging", "jax_test")
 
-if ag.util.dataset.should_simulate(dataset_path):
-    import subprocess
-    import sys
-
-    subprocess.run(
-        [sys.executable, "scripts/imaging/jax_likelihood/simulator.py"],
-        check=True,
-    )
+ag.util.dataset.simulate_if_needed(
+    dataset_path, simulator="scripts/imaging/jax_likelihood/simulator.py"
+)
 
 dataset = ag.Imaging.from_fits(
     data_path=path.join(dataset_path, "data.fits"),

@@ -50,14 +50,9 @@ mask_radius = 3.0
 
 dataset_path = path.join("dataset", "multi_dataset", "jax_test")
 
-if ag.util.dataset.should_simulate(dataset_path):
-    import subprocess
-    import sys
-
-    subprocess.run(
-        [sys.executable, "scripts/multi_dataset/jax_likelihood/simulator.py"],
-        check=True,
-    )
+ag.util.dataset.simulate_if_needed(
+    dataset_path, simulator="scripts/multi_dataset/jax_likelihood/simulator.py"
+)
 
 dataset_list = [
     ag.Imaging.from_fits(

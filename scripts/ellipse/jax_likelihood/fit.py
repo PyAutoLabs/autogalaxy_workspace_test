@@ -28,14 +28,9 @@ import autogalaxy as ag
 
 dataset_path = path.join("dataset", "ellipse", "jax_test")
 
-if ag.util.dataset.should_simulate(dataset_path):
-    import subprocess
-    import sys
-
-    subprocess.run(
-        [sys.executable, "scripts/ellipse/jax_likelihood/simulator.py"],
-        check=True,
-    )
+ag.util.dataset.simulate_if_needed(
+    dataset_path, simulator="scripts/ellipse/jax_likelihood/simulator.py"
+)
 
 dataset = ag.Imaging.from_fits(
     data_path=path.join(dataset_path, "data.fits"),
