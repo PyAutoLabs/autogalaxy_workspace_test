@@ -46,7 +46,6 @@ from pathlib import Path
 
 import autogalaxy as ag
 
-
 grid = ag.Grid2D.uniform(shape_native=(80, 80), pixel_scales=0.2)
 
 psf = ag.Convolver.from_gaussian(

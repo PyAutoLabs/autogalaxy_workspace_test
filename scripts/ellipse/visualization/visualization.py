@@ -61,7 +61,6 @@ import autofit as af
 import autogalaxy as ag
 from autogalaxy.ellipse.model.visualizer import VisualizerEllipse
 
-
 """
 __Dataset__
 

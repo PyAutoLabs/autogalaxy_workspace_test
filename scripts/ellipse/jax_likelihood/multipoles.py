@@ -29,7 +29,6 @@ import numpy as np
 import autofit as af
 import autogalaxy as ag
 
-
 dataset_path = path.join("dataset", "ellipse", "jax_test")
 
 ag.util.dataset.simulate_if_needed(

@@ -59,7 +59,6 @@ import numpy as np
 import autoarray as aa
 import autogalaxy as ag
 
-
 """
 __Dataset__
 

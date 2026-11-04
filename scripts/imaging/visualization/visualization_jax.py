@@ -49,7 +49,6 @@ import autofit as af
 import autogalaxy as ag
 from autogalaxy.imaging.model.visualizer import VisualizerImaging
 
-
 """
 __Dataset__
 """

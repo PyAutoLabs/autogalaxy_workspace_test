@@ -38,7 +38,6 @@ from autoarray.inversion.regularization.matern_kernel import (
     inv_via_cholesky,
 )
 
-
 """
 __Setup: a small irregular set of source-plane pixel coordinates [N, 2]__
 """

@@ -36,7 +36,6 @@ import numpy as np
 import autofit as af
 import autogalaxy as ag
 
-
 dataset_path = path.join("dataset", "imaging", "jax_test_group")
 
 ag.util.dataset.simulate_if_needed(

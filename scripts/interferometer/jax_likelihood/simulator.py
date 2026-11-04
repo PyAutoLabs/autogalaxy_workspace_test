@@ -49,7 +49,6 @@ import numpy as np
 import autogalaxy as ag
 import autogalaxy.plot as aplt
 
-
 grid = ag.Grid2D.uniform(shape_native=(128, 128), pixel_scales=0.2)
 
 rng = np.random.default_rng(seed=1)

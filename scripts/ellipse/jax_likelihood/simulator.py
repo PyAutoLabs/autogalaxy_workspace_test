@@ -34,7 +34,6 @@ from pathlib import Path
 import autogalaxy as ag
 import autogalaxy.plot as aplt
 
-
 dataset_path = Path("dataset", "ellipse", "jax_test")
 
 grid = ag.Grid2D.uniform(shape_native=(50, 50), pixel_scales=0.2)

@@ -35,7 +35,6 @@ import numpy.testing as npt
 
 import autoarray as aa
 
-
 """
 __Setup: small representative image, 21x21 PSF, circular mask with parity-preserving padding__
 """

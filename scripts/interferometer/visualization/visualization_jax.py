@@ -41,7 +41,6 @@ import autofit as af
 import autogalaxy as ag
 from autogalaxy.interferometer.model.visualizer import VisualizerInterferometer
 
-
 """
 __Dataset__
 
