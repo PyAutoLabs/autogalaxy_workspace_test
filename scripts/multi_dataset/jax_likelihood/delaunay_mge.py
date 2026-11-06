@@ -36,12 +36,15 @@ ENV: jax full_datasets
 
 from os import path
 
-import jax
-import jax.numpy as jnp
 import numpy as np
 
+# Import autogalaxy before jax: it enables JAX 64-bit precision, which only
+# takes effect if set before jax is first imported.
 import autofit as af
 import autogalaxy as ag
+
+import jax
+import jax.numpy as jnp
 
 waveband_list = ["g", "r"]
 pixel_scales = 0.2

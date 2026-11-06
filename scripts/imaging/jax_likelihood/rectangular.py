@@ -26,12 +26,15 @@ ENV: jax full_datasets
 import time
 from os import path
 
-import jax
-import jax.numpy as jnp
 import numpy as np
 
+# Import autogalaxy before jax: it enables JAX 64-bit precision, which only
+# takes effect if set before jax is first imported.
 import autofit as af
 import autogalaxy as ag
+
+import jax
+import jax.numpy as jnp
 
 dataset_path = path.join("dataset", "imaging", "jax_test")
 
@@ -170,7 +173,21 @@ print("JIT fit.log_likelihood:", fit.log_likelihood)
 assert isinstance(
     fit.log_likelihood, jnp.ndarray
 ), f"expected jax.Array, got {type(fit.log_likelihood)}"
+# Absolute bound in nats, not a relative one (PyAutoArray#552). The scalar is
+# dominated by the noise normalization, which grows with the pixel count N, so
+# a relative tolerance loosens as N grows while a real delta-chi-squared error
+# does not. A genuine model difference shows on the scale of the chi-squared
+# sampling floor sqrt(2N) ~ 25 nats; the measured mixed-precision vs fp64 gap
+# is ~1e-4 to 1e-3 nats, so 1e-2 nats is generous yet still catches a real bug.
 np.testing.assert_allclose(
-    float(fit.log_likelihood), float(fit_np.log_likelihood), rtol=2e-2
+    float(fit.log_likelihood), float(fit_np.log_likelihood), atol=1e-2, rtol=0
 )
 print("PASS: jit(fit_from) round-trip matches NumPy scalar.")
+
+# The parity check above is fp64 vs fp64 only if JAX 64-bit precision is on.
+# Under float32 the JIT log_evidence comes out nan, so check both directly
+# rather than relying on the smoke harness exporting JAX_ENABLE_X64.
+assert jax.config.jax_enable_x64, "JAX 64-bit precision is off"
+print("JIT fit.log_evidence:", fit.log_evidence)
+assert np.isfinite(float(fit.log_evidence)), "JIT log_evidence is not finite"
+print("PASS: JAX x64 enabled and JIT log_evidence finite.")
