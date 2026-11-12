@@ -12,7 +12,7 @@ pip install ./PyAutoNerves ./PyAutoFit ./PyAutoArray ./PyAutoGalaxy
 # `jax<0.7 jaxlib<0.7` solely to keep `tensorflow-probability==0.25.0`
 # importable, and autolens_workspace_test#184 removed that
 # dependency when the stack moved to tfp-nightly. jax's supported range is
-# owned by autonerves' base dependencies (jax>=0.7.0,<0.12.0, PyAutoLens#702)
+# owned by autonerves' base dependencies (jax>=0.12.0,<0.13, PyAutoNerves#215)
 # and is installed by the line above -- do not restate it here, it drifts.
 # The assertion at the end of this script checks the resolved version.
 pip install "./PyAutoArray[optional]" "./PyAutoGalaxy[optional]"
@@ -37,9 +37,9 @@ python - <<'JAXCHECK'
 import jax
 
 major, minor = (int(part) for part in jax.__version__.split(".")[:2])
-assert (0, 7) <= (major, minor) < (0, 12), (
+assert (0, 12) <= (major, minor) < (0, 13), (
     f"resolved jax {jax.__version__} is outside autonerves' supported range "
-    "(>=0.7.0,<0.12.0)"
+    "(>=0.12.0,<0.13)"
 )
 print(f"resolved jax {jax.__version__}")
 JAXCHECK
