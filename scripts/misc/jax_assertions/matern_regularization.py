@@ -1,16 +1,16 @@
 """
-Jax Assertions: Matern-Kernel Regularization (tfp bessel_kve path)
-==================================================================
+Jax Assertions: Matern-Kernel Regularization (vendored bessel_kve path)
+======================================================================
 
 Verifies that ``MaternKernel`` regularization builds end to end on the JAX
-backend and matches the eager NumPy reference. This is the regression guard for
-the 2026-07-13 release-validation failure (PyAutoArray #385): the JAX Matern
-path lazily imports ``tensorflow_probability.substrates.jax`` for the
-modified-Bessel ``bessel_kve`` term, and the last *stable* tfp release (0.25.0)
-crashes at import under the resolved ``jax>=0.7`` stack
-(``jax.interpreters.xla.pytype_aval_mappings`` was removed from modern JAX).
-The fix pins the tfp nightly; this script fails loudly if that combination ever
-regresses.
+backend and matches the eager NumPy reference. This began as the regression
+guard for the 2026-07-13 release-validation failure (PyAutoArray #385), when the
+JAX Matern path imported ``tensorflow_probability.substrates.jax`` for the
+modified-Bessel ``bessel_kve`` term and the stable tfp release crashed under
+modern JAX. PyAutoArray now vendors a pure-JAX ``bessel_kve``
+(``autoarray/inversion/regularization/bessel.py``, PyAutoArray#694), so no tfp
+is involved; the numerical certification of that port (``(nu, z)`` parity grid
+and gradients) is ``bessel_kve_parity.py`` beside this script.
 
 It exercises:
 
@@ -23,8 +23,8 @@ It exercises:
   is a continuous free prior (``Uniform(0.5, 5.5)``), so the Bessel term must be
   correct for arbitrary real order, not just closed-form half-integers.
 
-Library unit tests stay numpy-only by project convention; this cross-xp
-coverage lives here in workspace_test.
+The library unit tests only spot-check ``kv_xp`` under JAX; this end-to-end
+cross-xp coverage lives here in workspace_test.
 """
 
 import jax
@@ -51,7 +51,7 @@ scale = 0.7
 __matern_cov_matrix_from + inv_via_cholesky: fp64 JAX matches NumPy to atol=1e-8__
 
 Runs both nu = 0.5 (half-integer) and nu = 1.7 (arbitrary real order) through
-the tfp bessel_kve path.
+the vendored bessel_kve path.
 """
 for nu in (0.5, 1.7):
     cov_np = matern_cov_matrix_from(
@@ -71,8 +71,8 @@ for nu in (0.5, 1.7):
 """
 __Under jax.jit: kv_xp traces (not just runs eagerly)__
 
-A tracer flowing through ``kv_xp`` is what would surface a broken tfp import at
-compile time; assert the jitted result still matches NumPy.
+A tracer flowing through ``kv_xp`` is what would surface a non-traceable Bessel
+implementation at compile time; assert the jitted result still matches NumPy.
 """
 
 
