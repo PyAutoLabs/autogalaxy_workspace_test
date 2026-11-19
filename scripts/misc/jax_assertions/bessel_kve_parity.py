@@ -80,7 +80,9 @@ kve_ref = sc.kve(nu_grid, z_grid)
 
 finite = np.isfinite(kve_ref)
 assert not np.any(np.isnan(kve_jax)), "vendored kve returned nan"
-assert np.all(np.isfinite(kve_jax[finite])), "vendored kve overflows where SciPy does not"
+assert np.all(
+    np.isfinite(kve_jax[finite])
+), "vendored kve overflows where SciPy does not"
 npt.assert_allclose(kve_jax[finite], kve_ref[finite], rtol=1.0e-10)
 
 kv_jax = np.asarray(jax.jit(kv)(nu_grid, z_grid))
@@ -170,9 +172,7 @@ def covariance_sum(scale):
 
 grad_scale = float(jax.grad(covariance_sum)(0.7))
 h = 1.0e-6
-grad_scale_fd = float(
-    (covariance_sum(0.7 + h) - covariance_sum(0.7 - h)) / (2.0 * h)
-)
+grad_scale_fd = float((covariance_sum(0.7 + h) - covariance_sum(0.7 - h)) / (2.0 * h))
 npt.assert_allclose(grad_scale, grad_scale_fd, rtol=1.0e-6)
 
 npt.assert_allclose(
@@ -185,7 +185,9 @@ npt.assert_allclose(
     rtol=1.0e-10,
 )
 
-tfp_modules = [name for name in sys.modules if name.startswith("tensorflow_probability")]
+tfp_modules = [
+    name for name in sys.modules if name.startswith("tensorflow_probability")
+]
 assert not tfp_modules, f"tensorflow_probability imported: {tfp_modules[:3]}"
 
 print("bessel_kve_parity: all assertions passed")
