@@ -111,10 +111,19 @@ it are solver-independent.
 """
 settings = ag.Settings(use_positive_only_solver=False)
 
+"""
+Since R6 an un-operated NumPy dataset builds its sparse operator lazily by
+default (`lazy_sparse_operator: "auto"`), which would route the mapping leg to
+the sparse inversion too and leave nothing to compare. The mapping leg switches
+that off so it stays on the dense mapping-matrix route this script checks
+against; the sparse-operator leg keeps the default settings.
+"""
+settings_mapping = ag.Settings(use_positive_only_solver=False, lazy_sparse_operator="off")
+
 fit_mapping = ag.FitImaging(
     dataset=masked_dataset,
     galaxies=galaxies,
-    settings=settings,
+    settings=settings_mapping,
 )
 
 fit_sparse_operator = ag.FitImaging(
