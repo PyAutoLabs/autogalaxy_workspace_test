@@ -150,7 +150,9 @@ the sparse inversion too and leave nothing to compare. The mapping leg switches
 that off so it stays on the dense mapping-matrix route this script checks
 against; the sparse-operator leg keeps the default settings.
 """
-settings_mapping = ag.Settings(use_positive_only_solver=False, lazy_sparse_operator="off")
+settings_mapping = ag.Settings(
+    use_positive_only_solver=False, lazy_sparse_operator="off"
+)
 
 
 def assert_parity(name, galaxies, rtol_reconstruction, rtol_log_evidence):
